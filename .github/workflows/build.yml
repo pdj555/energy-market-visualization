@@ -68,33 +68,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: 'frontend/package-lock.json'
-      
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: latest
-          run_install: false
-      
-      - name: Cache pnpm dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.pnpm-store
-            frontend/node_modules
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('frontend/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
-      
-      - name: Cache Maven dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.m2/repository
-            backend/target
-          key: ${{ runner.os }}-maven-${{ hashFiles('backend/pom.xml', 'backend/**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
       
       # Backend Testing Job
       - name: Backend - Validate Code Formatting (Spotless)
@@ -140,56 +113,49 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           MAVEN_OPTS: "-Xmx2048m"
       
-      - name: Backend - Package Application
-        if: matrix.task == 'backend'
-        working-directory: ./backend
-        run: |
-          echo "Packaging backend application..."
-          mvn package -DskipTests -B
-      
       # Frontend Testing Job
       - name: Frontend - Install Dependencies
         if: matrix.task == 'frontend'
         working-directory: ./frontend
         run: |
           echo "Installing frontend dependencies..."
-          pnpm install --frozen-lockfile
-      
+          npm install --legacy-peer-deps
+
       - name: Frontend - TypeScript Type Check
         if: matrix.task == 'frontend'
         working-directory: ./frontend
         run: |
           echo "Running TypeScript type checking..."
-          pnpm run type-check
-      
+          npm run type-check
+
       - name: Frontend - Code Formatting Check (Prettier)
         if: matrix.task == 'frontend'
         working-directory: ./frontend
         run: |
           echo "Validating code formatting with Prettier..."
-          pnpm run format:check
-      
+          npm run format:check
+
       - name: Frontend - Lint Code (ESLint)
         if: matrix.task == 'frontend'
         working-directory: ./frontend
         run: |
           echo "Running ESLint with strict rules..."
-          pnpm run lint
-      
+          npm run lint
+
       - name: Frontend - Run Tests with Coverage
         if: matrix.task == 'frontend'
         working-directory: ./frontend
         run: |
           echo "Running frontend tests with coverage..."
-          pnpm run test:ci
-      
+          npm run test:ci
+
       - name: Frontend - Build Application
         if: matrix.task == 'frontend'
         working-directory: ./frontend
         run: |
           echo "Building frontend application..."
-          pnpm run build
-      
+          npm run build
+
       # Docker Publishing Job
       - name: Docker - Log in to Container Registry
         if: matrix.task == 'docker'
@@ -345,6 +311,13 @@ jobs:
           EOF
           fi
       
+      - name: Backend - Package Application (for Docker)
+        if: matrix.task == 'docker'
+        working-directory: ./backend
+        run: |
+          echo "Packaging backend application for Docker..."
+          mvn package -DskipTests -B
+
       - name: Docker - Build and push energy-service
         if: matrix.task == 'docker'
         uses: docker/build-push-action@v5
