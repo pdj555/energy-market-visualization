@@ -12,7 +12,7 @@ The `build.yml` workflow implements a comprehensive CI/CD pipeline for the Energ
 ✅ **pnpm**: Frontend jobs use pnpm with proper caching  
 ✅ **Maven & pnpm caching**: Optimized caching strategies for both package managers  
 ✅ **Matrix jobs**: Three distinct matrix jobs: `test-backend`, `test-frontend`, `docker-publish`  
-✅ **Artifacts**: Produces `energy-service:SHA` and `energy-viz:SHA` Docker images  
+✅ **Artifacts**: Produces `energy-service:SHA` and `energy-viz:SHA` Docker images
 
 ## Architecture
 
@@ -21,7 +21,7 @@ The `build.yml` workflow implements a comprehensive CI/CD pipeline for the Energ
 The pipeline uses a GitHub Actions matrix to run three parallel jobs:
 
 1. **test-backend**: Validates Java Spring Boot backend
-2. **test-frontend**: Validates React/TypeScript frontend  
+2. **test-frontend**: Validates React/TypeScript frontend
 3. **docker-publish**: Builds and publishes Docker images
 
 ### Technology Stack
@@ -38,6 +38,7 @@ The pipeline uses a GitHub Actions matrix to run three parallel jobs:
 ### 1. Environment Setup
 
 All jobs include:
+
 - Repository checkout with full history
 - JDK 22 setup with Maven caching
 - Node.js 20 setup with npm caching
@@ -63,12 +64,14 @@ All jobs include:
 ### 4. Docker Publishing (`docker-publish`)
 
 #### Security-First Approach
+
 - Non-root user containers (uid/gid 1001)
 - Minimal attack surface with Alpine Linux
 - Health checks for container orchestration
 - OCI-compliant image metadata
 
 #### Multi-Architecture Support
+
 - **Platforms**: linux/amd64, linux/arm64
 - **Build Cache**: GitHub Actions cache optimization
 - **Registry**: GitHub Container Registry with automated authentication
@@ -76,12 +79,14 @@ All jobs include:
 #### Image Artifacts
 
 **energy-service** (Backend):
+
 - Base: `eclipse-temurin:22-jre-alpine`
 - Optimized JVM flags for containerized environments
 - Health check endpoint: `/actuator/health`
 - Memory limit: 75% of container memory
 
 **energy-viz** (Frontend):
+
 - Multi-stage build: Node.js builder + Nginx runtime
 - Optimized Nginx configuration with gzip compression
 - SPA routing support with fallback to index.html
@@ -90,6 +95,7 @@ All jobs include:
 #### Tagging Strategy
 
 Images are tagged with multiple strategies:
+
 - **Branch-based**: `feature-branch-name`
 - **PR-based**: `pr-123`
 - **SHA-based**: `main-YYYYMMDD-HHmmss` (with timestamp)
@@ -99,16 +105,19 @@ Images are tagged with multiple strategies:
 ## Quality Gates
 
 ### Security Scanning
+
 - **Vulnerability Detection**: Anchore scanning for high/critical CVEs
 - **Build Failure**: Pipeline fails on high-severity vulnerabilities
 - **Supply Chain**: SBOM (Software Bill of Materials) generation
 
 ### Performance Budgets
+
 - **Build Time**: Optimized with aggressive caching
 - **Image Size**: Multi-stage builds minimize production image size
 - **Memory Usage**: JVM tuned for container environments
 
 ### Observability
+
 - **Build Summaries**: Detailed job status and artifact information
 - **Test Results**: Uploaded as pipeline artifacts (30-day retention)
 - **Traceability**: Full commit SHA tracking in image tags
@@ -118,6 +127,7 @@ Images are tagged with multiple strategies:
 ### Triggering the Pipeline
 
 **Automatic Triggers:**
+
 ```yaml
 # On pull requests
 pull_request:
@@ -133,6 +143,7 @@ push:
 ```
 
 **Manual Trigger:**
+
 ```bash
 # Via GitHub UI: Actions → Build, Test & Publish → Run workflow
 # Via GitHub CLI:
@@ -142,15 +153,17 @@ gh workflow run build.yml
 ### Consuming Artifacts
 
 **Docker Images:**
+
 ```bash
 # Backend service
 docker pull ghcr.io/your-org/energy-market-visualization/energy-service:latest
 
-# Frontend application  
+# Frontend application
 docker pull ghcr.io/your-org/energy-market-visualization/energy-viz:latest
 ```
 
 **Development Workflow:**
+
 1. Create feature branch: `feature/issue-123-description`
 2. Push commits → Pipeline validates changes
 3. Create PR → All matrix jobs run in parallel
@@ -161,16 +174,19 @@ docker pull ghcr.io/your-org/energy-market-visualization/energy-viz:latest
 ### Caching Strategy
 
 **Maven Dependencies:**
+
 - Cache key: `pom.xml` file hashes
 - Location: `~/.m2/repository` + `backend/target`
 - Fallback: OS-based partial cache
 
 **pnpm Dependencies:**
+
 - Cache key: `pnpm-lock.yaml` hash
 - Location: `~/.pnpm-store` + `frontend/node_modules`
 - Fallback: OS-based partial cache
 
 **Docker Layers:**
+
 - Build cache: GitHub Actions cache
 - Registry cache: Layer reuse across builds
 - Multi-stage optimization: Separate build and runtime layers
@@ -189,14 +205,17 @@ docker pull ghcr.io/your-org/energy-market-visualization/energy-viz:latest
 ### Common Issues
 
 **Cache Misses:**
+
 - Verify `pom.xml` or `pnpm-lock.yaml` hasn't changed
 - Check cache key generation in workflow logs
 
 **Docker Build Failures:**
+
 - Ensure Docker context includes required files
 - Verify Dockerfile syntax and base image availability
 
 **Test Failures:**
+
 - Check uploaded test artifacts for detailed reports
 - Review application logs in workflow output
 
@@ -204,7 +223,7 @@ docker pull ghcr.io/your-org/energy-market-visualization/energy-viz:latest
 
 **Success Rate:** Pipeline includes health checks and validation  
 **Artifact Quality:** Security scanning prevents vulnerable images  
-**Traceability:** Full SHA tracking from commit to deployment  
+**Traceability:** Full SHA tracking from commit to deployment
 
 ## Constitutional Compliance
 
@@ -221,15 +240,18 @@ This pipeline embodies the system constitution principles:
 ### Updates Required
 
 **Quarterly:**
+
 - Review and update action versions (`@v4` → `@v5`)
 - Update base Docker images for security patches
 - Review dependency cache strategies
 
 **Monthly:**
+
 - Monitor build performance and optimize if needed
 - Review security scan reports and update thresholds
 
 **On Technology Updates:**
+
 - Update JDK version (currently 22)
 - Update Node.js version (currently 20)
 - Update pnpm version as needed
