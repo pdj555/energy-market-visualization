@@ -97,42 +97,47 @@ jobs:
             ${{ runner.os }}-maven-
       
       # Backend Testing Job
-      - name: Backend - Validate Project Structure
-        if: matrix.task == 'backend'
-        run: |
-          echo "Validating backend project structure..."
-          if [ ! -f "backend/pom.xml" ]; then
-            echo "Creating backend directory structure for validation..."
-            mkdir -p backend/src/{main,test}/java/com/energymarket
-            echo '<?xml version="1.0" encoding="UTF-8"?>
-            <project xmlns="http://maven.apache.org/POM/4.0.0">
-              <modelVersion>4.0.0</modelVersion>
-              <groupId>com.energymarket</groupId>
-              <artifactId>energy-service</artifactId>
-              <version>1.0.0</version>
-              <packaging>jar</packaging>
-              <properties>
-                <maven.compiler.source>22</maven.compiler.source>
-                <maven.compiler.target>22</maven.compiler.target>
-                <spring.boot.version>3.2.1</spring.boot.version>
-              </properties>
-              <dependencies>
-                <dependency>
-                  <groupId>org.springframework.boot</groupId>
-                  <artifactId>spring-boot-starter-webflux</artifactId>
-                  <version>${spring.boot.version}</version>
-                </dependency>
-              </dependencies>
-            </project>' > backend/pom.xml
-          fi
-      
-      - name: Backend - Run Tests
+      - name: Backend - Validate Code Formatting (Spotless)
         if: matrix.task == 'backend'
         working-directory: ./backend
         run: |
-          echo "Running backend tests with Maven..."
-          mvn clean test -B -Dspring.profiles.active=test
+          echo "Validating code formatting with Spotless..."
+          mvn spotless:check -B
         env:
+          MAVEN_OPTS: "-Xmx2048m"
+      
+      - name: Backend - Run Tests with Coverage
+        if: matrix.task == 'backend'
+        working-directory: ./backend
+        run: |
+          echo "Running backend tests with JaCoCo coverage..."
+          mvn clean test jacoco:report -B -Dspring.profiles.active=test
+        env:
+          MAVEN_OPTS: "-Xmx2048m"
+      
+      - name: Backend - Verify Coverage Threshold
+        if: matrix.task == 'backend'
+        working-directory: ./backend
+        run: |
+          echo "Verifying coverage meets 80% threshold..."
+          mvn jacoco:check -B
+        env:
+          MAVEN_OPTS: "-Xmx2048m"
+      
+      - name: Backend - SonarQube Analysis
+        if: matrix.task == 'backend'
+        working-directory: ./backend
+        run: |
+          echo "Running SonarQube analysis..."
+          mvn sonar:sonar -B \
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.organization=energy-market-visualization \
+            -Dsonar.projectKey=energy-market-visualization \
+            -Dsonar.qualitygate.wait=true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           MAVEN_OPTS: "-Xmx2048m"
       
       - name: Backend - Package Application
@@ -140,40 +145,9 @@ jobs:
         working-directory: ./backend
         run: |
           echo "Packaging backend application..."
-          mvn clean package -DskipTests -B
+          mvn package -DskipTests -B
       
       # Frontend Testing Job
-      - name: Frontend - Validate Project Structure
-        if: matrix.task == 'frontend'
-        run: |
-          echo "Validating frontend project structure..."
-          if [ ! -f "frontend/package.json" ]; then
-            echo "Creating frontend directory structure for validation..."
-            mkdir -p frontend/src
-            echo '{
-              "name": "energy-viz",
-              "version": "1.0.0",
-              "type": "module",
-              "scripts": {
-                "dev": "vite",
-                "build": "vite build",
-                "test": "vitest",
-                "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
-              },
-              "dependencies": {
-                "react": "^19.0.0",
-                "react-dom": "^19.0.0"
-              },
-              "devDependencies": {
-                "@types/react": "^18.2.43",
-                "@types/react-dom": "^18.2.17",
-                "vite": "^5.0.8",
-                "vitest": "^1.1.0"
-              }
-            }' > frontend/package.json
-            echo 'export default {}' > frontend/vite.config.ts
-          fi
-      
       - name: Frontend - Install Dependencies
         if: matrix.task == 'frontend'
         working-directory: ./frontend
@@ -181,29 +155,40 @@ jobs:
           echo "Installing frontend dependencies..."
           pnpm install --frozen-lockfile
       
-      - name: Frontend - Lint Code
+      - name: Frontend - TypeScript Type Check
         if: matrix.task == 'frontend'
         working-directory: ./frontend
         run: |
-          echo "Running frontend linting..."
-          # pnpm run lint
-          echo "Linting completed successfully"
+          echo "Running TypeScript type checking..."
+          pnpm run type-check
       
-      - name: Frontend - Run Tests
+      - name: Frontend - Code Formatting Check (Prettier)
         if: matrix.task == 'frontend'
         working-directory: ./frontend
         run: |
-          echo "Running frontend tests..."
-          # pnpm run test:ci
-          echo "Frontend tests completed successfully"
+          echo "Validating code formatting with Prettier..."
+          pnpm run format:check
+      
+      - name: Frontend - Lint Code (ESLint)
+        if: matrix.task == 'frontend'
+        working-directory: ./frontend
+        run: |
+          echo "Running ESLint with strict rules..."
+          pnpm run lint
+      
+      - name: Frontend - Run Tests with Coverage
+        if: matrix.task == 'frontend'
+        working-directory: ./frontend
+        run: |
+          echo "Running frontend tests with coverage..."
+          pnpm run test:ci
       
       - name: Frontend - Build Application
         if: matrix.task == 'frontend'
         working-directory: ./frontend
         run: |
           echo "Building frontend application..."
-          # pnpm run build
-          echo "Frontend build completed successfully"
+          pnpm run build
       
       # Docker Publishing Job
       - name: Docker - Log in to Container Registry
