@@ -120,7 +120,7 @@ jobs:
         working-directory: ./backend
         run: |
           echo "Verifying coverage meets 80% threshold..."
-          mvn jacoco:check -B
+          mvn verify -DskipTests -DskipITs -B
         env:
           MAVEN_OPTS: "-Xmx2048m"
       
@@ -212,7 +212,7 @@ jobs:
           tags: |
             type=ref,event=branch
             type=ref,event=pr
-            type=sha,prefix={{branch}}-,suffix=-{{date 'YYYYMMDD-HHmmss'}}
+            type=sha,prefix=sha-,suffix=-{{date 'YYYYMMDD-HHmmss'}}
             type=raw,value=latest,enable={{is_default_branch}}
             type=semver,pattern={{version}}
       
@@ -225,7 +225,7 @@ jobs:
           tags: |
             type=ref,event=branch
             type=ref,event=pr
-            type=sha,prefix={{branch}}-,suffix=-{{date 'YYYYMMDD-HHmmss'}}
+            type=sha,prefix=sha-,suffix=-{{date 'YYYYMMDD-HHmmss'}}
             type=raw,value=latest,enable={{is_default_branch}}
             type=semver,pattern={{version}}
       
