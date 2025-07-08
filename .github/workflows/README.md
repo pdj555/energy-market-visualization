@@ -260,4 +260,4 @@ This pipeline embodies the system constitution principles:
 
 > *"The best build pipeline is one that developers never think about – it just works."*
 
-This pipeline aims to be invisible to developers while maintaining Apple-level quality standards. 
+This pipeline aims to be invisible to developers while maintaining Apple-level quality standards.
