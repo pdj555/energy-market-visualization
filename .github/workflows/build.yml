@@ -68,6 +68,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
       
       # Backend Testing Job
       - name: Backend - Validate Code Formatting (Spotless)
@@ -237,13 +238,11 @@ jobs:
           
           WORKDIR /app
           
-          RUN npm install -g pnpm
-          
-          COPY package*.json pnpm-lock.yaml ./
-          RUN pnpm install --frozen-lockfile
+          COPY package*.json package-lock.json ./
+          RUN npm ci --legacy-peer-deps
           
           COPY . .
-          RUN pnpm run build
+          RUN npm run build
           
           # Production stage
           FROM nginx:alpine
