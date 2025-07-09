@@ -94,7 +94,7 @@ jobs:
         working-directory: ./backend
         run: |
           echo "Verifying coverage meets 80% threshold..."
-          mvn clean jacoco:check -B
+          mvn verify -DskipTests -B
         env:
           MAVEN_OPTS: "-Xmx2048m"
       
@@ -179,7 +179,7 @@ jobs:
           tags: |
             type=ref,event=branch
             type=ref,event=pr
-            type=sha,prefix={{branch}}-,suffix=-{{date 'YYYYMMDD-HHmmss'}}
+            type=sha,prefix=commit-,suffix=-{{date 'YYYYMMDD-HHmmss'}}
             type=raw,value=latest,enable={{is_default_branch}}
             type=semver,pattern={{version}}
       
@@ -192,7 +192,7 @@ jobs:
           tags: |
             type=ref,event=branch
             type=ref,event=pr
-            type=sha,prefix={{branch}}-,suffix=-{{date 'YYYYMMDD-HHmmss'}}
+            type=sha,prefix=commit-,suffix=-{{date 'YYYYMMDD-HHmmss'}}
             type=raw,value=latest,enable={{is_default_branch}}
             type=semver,pattern={{version}}
       
@@ -317,20 +317,13 @@ jobs:
           echo "Packaging backend application for Docker..."
           mvn package -DskipTests -B
 
-      - name: Filter valid Docker tags for energy-service
-        if: matrix.task == 'docker'
-        id: filter-tags-backend
-        run: |
-          echo "$(echo '${{ steps.meta-backend.outputs.tags }}' | tr ' ' '\n' | grep -vE '^$|^-')" | paste -sd, - > filtered-tags.txt
-          echo "FILTERED_TAGS=$(cat filtered-tags.txt)" >> $GITHUB_ENV
-
       - name: Docker - Build and push energy-service
         if: matrix.task == 'docker'
         uses: docker/build-push-action@v5
         with:
           context: ./backend
           push: true
-          tags: ${{ env.FILTERED_TAGS }}
+          tags: ${{ steps.meta-backend.outputs.tags }}
           labels: ${{ steps.meta-backend.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -353,7 +346,7 @@ jobs:
         if: matrix.task == 'docker'
         uses: anchore/scan-action@v3
         with:
-          image: ${{ env.REGISTRY }}/${{ env.IMAGE_BASE }}/energy-service:${{ github.sha }}
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE_BASE }}/energy-service:commit-${{ github.sha }}-${{ github.run_id }}
           fail-build: true
           severity-cutoff: 'high'
       
@@ -380,6 +373,6 @@ jobs:
           
           if [ "${{ matrix.task }}" = "docker" ]; then
             echo "- **Docker Images Built**:" >> $GITHUB_STEP_SUMMARY
-            echo "  - energy-service:${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
-            echo "  - energy-viz:${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+            echo "  - energy-service:commit-${{ github.sha }}-${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
+            echo "  - energy-viz:commit-${{ github.sha }}-${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
           fi 
