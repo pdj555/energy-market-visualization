@@ -3,9 +3,7 @@ package com.energymarket.model;
 import java.time.Instant;
 import java.util.Map;
 
-/**
- * Model representing overall market statistics.
- */
+/** Model representing overall market statistics. */
 public class MarketStats {
   private final double totalVolume;
   private final double averagePrice;

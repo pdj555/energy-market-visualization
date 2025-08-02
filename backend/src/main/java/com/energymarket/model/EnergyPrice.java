@@ -2,9 +2,7 @@ package com.energymarket.model;
 
 import java.time.Instant;
 
-/**
- * Model representing energy price data at a specific point in time.
- */
+/** Model representing energy price data at a specific point in time. */
 public class EnergyPrice {
   private final EnergyType energyType;
   private final double price;

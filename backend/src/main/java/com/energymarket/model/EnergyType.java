@@ -1,8 +1,6 @@
 package com.energymarket.model;
 
-/**
- * Enum representing different types of energy sources in the market.
- */
+/** Enum representing different types of energy sources in the market. */
 public enum EnergyType {
   ELECTRICITY("Electricity", "MWh"),
   GAS("Natural Gas", "MMBtu"),

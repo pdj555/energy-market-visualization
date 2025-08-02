@@ -16,9 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-/**
- * Service responsible for streaming real-time energy market data via WebSocket.
- */
+/** Service responsible for streaming real-time energy market data via WebSocket. */
 @Service
 public class EnergyDataStreamingService {
 
@@ -44,19 +42,14 @@ public class EnergyDataStreamingService {
 
     // Stream energy prices
     executorService.scheduleAtFixedRate(
-        this::streamEnergyPrices,
-        0,
-        updateIntervalMs,
-        TimeUnit.MILLISECONDS
-    );
+        this::streamEnergyPrices, 0, updateIntervalMs, TimeUnit.MILLISECONDS);
 
     // Stream market statistics
     executorService.scheduleAtFixedRate(
         this::streamMarketStats,
         500, // Offset by 500ms to spread the load
         updateIntervalMs,
-        TimeUnit.MILLISECONDS
-    );
+        TimeUnit.MILLISECONDS);
   }
 
   @PreDestroy

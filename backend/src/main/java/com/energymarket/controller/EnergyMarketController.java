@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * REST controller for energy market data endpoints.
- */
+/** REST controller for energy market data endpoints. */
 @RestController
 @RequestMapping("/api/energy-market")
 @CrossOrigin(origins = {"http://localhost:5173", "http://localhost:3000"})
@@ -28,9 +26,7 @@ public class EnergyMarketController {
     this.simulationService = simulationService;
   }
 
-  /**
-   * Get current prices for all energy types.
-   */
+  /** Get current prices for all energy types. */
   @GetMapping("/prices")
   public ResponseEntity<List<EnergyPrice>> getCurrentPrices() {
     final List<EnergyPrice> prices = new ArrayList<>();
@@ -40,9 +36,7 @@ public class EnergyMarketController {
     return ResponseEntity.ok(prices);
   }
 
-  /**
-   * Get current price for a specific energy type.
-   */
+  /** Get current price for a specific energy type. */
   @GetMapping("/prices/{energyType}")
   public ResponseEntity<EnergyPrice> getPriceByType(@PathVariable final String energyType) {
     try {
@@ -54,26 +48,22 @@ public class EnergyMarketController {
     }
   }
 
-  /**
-   * Get current market statistics.
-   */
+  /** Get current market statistics. */
   @GetMapping("/stats")
   public ResponseEntity<MarketStats> getMarketStats() {
     return ResponseEntity.ok(simulationService.generateMarketStats());
   }
 
-  /**
-   * Get all available energy types.
-   */
+  /** Get all available energy types. */
   @GetMapping("/energy-types")
   public ResponseEntity<List<Map<String, String>>> getEnergyTypes() {
     final List<Map<String, String>> types = new ArrayList<>();
     for (final EnergyType type : EnergyType.values()) {
-      types.add(Map.of(
-          "type", type.name(),
-          "displayName", type.getDisplayName(),
-          "unit", type.getUnit()
-      ));
+      types.add(
+          Map.of(
+              "type", type.name(),
+              "displayName", type.getDisplayName(),
+              "unit", type.getUnit()));
     }
     return ResponseEntity.ok(types);
   }

@@ -1,26 +1,27 @@
 package com.energymarket;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
 
-/** Integration test for the main Application class. */
 @SpringBootTest
 @ActiveProfiles("test")
 class ApplicationTest {
 
-  /** Test that the Spring Boot application context loads successfully. */
+  @Autowired private ApplicationContext context;
+
   @Test
   void contextLoads() {
-    // This test verifies that the application context loads without errors
-    // No explicit assertions needed - the test passes if context loads
+    assertNotNull(context);
   }
 
-  /** Test the main method executes without exceptions. */
   @Test
-  void mainMethodExecutes() {
-    // Test that main method can be called without exceptions
-    // Note: This doesn't actually start the server, just verifies no compile errors
-    // Application.main(new String[]{}); // Commented out to avoid starting actual server in tests
+  void mainMethodRuns() {
+    // Test that the main method doesn't throw exceptions
+    Application.main(new String[] {});
   }
 }
