@@ -1,10 +1,14 @@
-name: CI
+name: Build
 
-on: [push, pull_request]
+on: 
+  push:
+    branches: [main]
+  pull_request:
 
 jobs:
-  build:
+  quality:
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v4
       
@@ -12,9 +16,37 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      
-      - name: Build Backend
-        run: cd backend && mvn compile
-      
-      - name: Build Frontend  
-        run: cd frontend && npm install && npm run build 
+          
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      # Backend - it should just work
+      - name: Backend
+        run: |
+          cd backend
+          mvn compile
+          mvn spring-boot:run &
+          sleep 10
+          curl -f http://localhost:8080/api/energy || exit 1
+          
+      # Frontend - it should be beautiful
+      - name: Frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
+          # Check build size - excellence means efficiency
+          size=$(du -sb dist | cut -f1)
+          if [ $size -gt 1048576 ]; then
+            echo "Build too large: ${size} bytes"
+            exit 1
+          fi
+          
+      # The real test - does it work?
+      - name: Integration
+        run: |
+          cd frontend
+          npm run preview &
+          sleep 5
+          curl -f http://localhost:4173 || exit 1 
