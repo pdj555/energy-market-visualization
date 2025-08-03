@@ -21,9 +21,11 @@ echo ""
 echo "Starting backend server on port 8080..."
 cd backend
 if [ -f mvnw ]; then
-    ./mvnw spring-boot:run &
+    ./mvnw -q package
+    java -cp target/classes com.energymarket.EnergyMarketService &
 elif command -v mvn &> /dev/null; then
-    mvn spring-boot:run &
+    mvn -q package
+    java -cp target/classes com.energymarket.EnergyMarketService &
 else
     echo "Maven not found. Please install Maven or use the Maven wrapper."
     exit 1
