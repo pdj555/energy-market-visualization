@@ -8,19 +8,12 @@ import {
   Tooltip,
   Legend,
   ChartData,
-  ChartOptions
+  ChartOptions,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { EnergyPrice, ENERGY_COLORS } from '../types/energy';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 interface EnergyPriceChartProps {
   prices: EnergyPrice[];
@@ -42,8 +35,8 @@ export const EnergyPriceChart: React.FC<EnergyPriceChartProps> = ({ prices }) =>
         backgroundColor: prices.map(p => ENERGY_COLORS[p.energyType] + '80'), // Add transparency
         borderColor: prices.map(p => ENERGY_COLORS[p.energyType]),
         borderWidth: 2,
-      }
-    ]
+      },
+    ],
   };
 
   const options: ChartOptions<'bar'> = {
@@ -64,34 +57,34 @@ export const EnergyPriceChart: React.FC<EnergyPriceChartProps> = ({ prices }) =>
       },
       tooltip: {
         callbacks: {
-          label: (context) => {
+          label: context => {
             const price = context.parsed.y;
             const index = context.dataIndex;
             const unit = prices[index]?.unit || 'MWh';
             return `$${price.toFixed(2)} per ${unit}`;
-          }
-        }
-      }
+          },
+        },
+      },
     },
     scales: {
       y: {
         beginAtZero: true,
         ticks: {
-          callback: (value) => `$${value}`,
+          callback: value => `$${value}`,
         },
         grid: {
           color: 'rgba(0, 0, 0, 0.05)',
-        }
+        },
       },
       x: {
         grid: {
           display: false,
-        }
-      }
+        },
+      },
     },
     animation: {
       duration: 750,
-    }
+    },
   };
 
   useEffect(() => {
@@ -102,8 +95,8 @@ export const EnergyPriceChart: React.FC<EnergyPriceChartProps> = ({ prices }) =>
   }, [prices]);
 
   return (
-    <div className="card">
-      <div className="h-96">
+    <div className='card'>
+      <div className='h-96'>
         <Bar ref={chartRef} data={chartData} options={options} />
       </div>
     </div>

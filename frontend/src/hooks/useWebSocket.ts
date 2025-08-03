@@ -23,20 +23,14 @@ export function useWebSocket() {
         clearInterval(connectionCheckInterval);
 
         // Subscribe to energy prices
-        const unsubscribePrices = wsService.subscribeToEnergyPrices((prices) => {
+        wsService.subscribeToEnergyPrices(prices => {
           setEnergyPrices(prices);
         });
 
         // Subscribe to market stats
-        const unsubscribeStats = wsService.subscribeToMarketStats((stats) => {
+        wsService.subscribeToMarketStats(stats => {
           setMarketStats(stats);
         });
-
-        // Cleanup subscriptions on unmount
-        return () => {
-          unsubscribePrices();
-          unsubscribeStats();
-        };
       }
     }, 100);
 

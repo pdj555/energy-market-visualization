@@ -2,6 +2,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { useWebSocket } from './useWebSocket';
 import { WebSocketService } from '../services/websocket';
+import { EnergyPrice } from '../types/energy';
 
 // Mock the WebSocket service
 vi.mock('../services/websocket', () => {
@@ -23,7 +24,7 @@ vi.mock('../services/websocket', () => {
 });
 
 describe('useWebSocket Hook', () => {
-  let mockWebSocketInstance: any;
+  let mockWebSocketInstance: ReturnType<typeof WebSocketService>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -36,7 +37,7 @@ describe('useWebSocket Hook', () => {
 
   it('initializes with empty data and disconnected state', () => {
     mockWebSocketInstance.isConnected.mockReturnValue(false);
-    
+
     const { result } = renderHook(() => useWebSocket());
 
     expect(result.current.energyPrices).toEqual([]);
@@ -46,20 +47,18 @@ describe('useWebSocket Hook', () => {
 
   it('connects to WebSocket on mount', () => {
     mockWebSocketInstance.isConnected.mockReturnValue(false);
-    
+
     renderHook(() => useWebSocket());
 
     expect(mockWebSocketInstance.connect).toHaveBeenCalledTimes(1);
   });
 
   it('subscribes to data streams when connected', async () => {
-    mockWebSocketInstance.isConnected
-      .mockReturnValueOnce(false)
-      .mockReturnValueOnce(true);
-    
+    mockWebSocketInstance.isConnected.mockReturnValueOnce(false).mockReturnValueOnce(true);
+
     const unsubscribePrices = vi.fn();
     const unsubscribeStats = vi.fn();
-    
+
     mockWebSocketInstance.subscribeToEnergyPrices.mockReturnValue(unsubscribePrices);
     mockWebSocketInstance.subscribeToMarketStats.mockReturnValue(unsubscribeStats);
 
@@ -75,9 +74,9 @@ describe('useWebSocket Hook', () => {
 
   it('updates energy prices when data is received', async () => {
     mockWebSocketInstance.isConnected.mockReturnValue(true);
-    
-    let priceHandler: any;
-    mockWebSocketInstance.subscribeToEnergyPrices.mockImplementation((handler) => {
+
+    let priceHandler: ((prices: EnergyPrice[]) => void) | undefined;
+    mockWebSocketInstance.subscribeToEnergyPrices.mockImplementation(handler => {
       priceHandler = handler;
       return vi.fn();
     });
@@ -86,7 +85,13 @@ describe('useWebSocket Hook', () => {
     const { result } = renderHook(() => useWebSocket());
 
     const mockPrices = [
-      { energyType: 'ELECTRICITY', price: 45.50, unit: 'MWh', timestamp: '2024-01-15T10:30:00Z', changePercent: 2.5 },
+      {
+        energyType: 'ELECTRICITY',
+        price: 45.5,
+        unit: 'MWh',
+        timestamp: '2024-01-15T10:30:00Z',
+        changePercent: 2.5,
+      },
     ];
 
     await waitFor(() => {
@@ -102,7 +107,7 @@ describe('useWebSocket Hook', () => {
 
   it('disconnects on unmount', () => {
     mockWebSocketInstance.isConnected.mockReturnValue(true);
-    
+
     const { unmount } = renderHook(() => useWebSocket());
 
     unmount();

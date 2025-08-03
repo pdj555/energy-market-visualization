@@ -14,20 +14,20 @@ vi.mock('./hooks/useWebSocket', () => ({
 
 vi.mock('./components/ConnectionStatus', () => ({
   ConnectionStatus: ({ isConnected }: { isConnected: boolean }) => (
-    <div data-testid="connection-status">{isConnected ? 'Live' : 'Disconnected'}</div>
+    <div data-testid='connection-status'>{isConnected ? 'Live' : 'Disconnected'}</div>
   ),
 }));
 
 vi.mock('./components/EnergyPriceCard', () => ({
-  EnergyPriceCard: () => <div data-testid="energy-price-card">Energy Price Card</div>,
+  EnergyPriceCard: () => <div data-testid='energy-price-card'>Energy Price Card</div>,
 }));
 
 vi.mock('./components/MarketStatsCard', () => ({
-  MarketStatsCard: () => <div data-testid="market-stats-card">Market Stats Card</div>,
+  MarketStatsCard: () => <div data-testid='market-stats-card'>Market Stats Card</div>,
 }));
 
 vi.mock('./components/EnergyPriceChart', () => ({
-  EnergyPriceChart: () => <div data-testid="energy-price-chart">Energy Price Chart</div>,
+  EnergyPriceChart: () => <div data-testid='energy-price-chart'>Energy Price Chart</div>,
 }));
 
 // Mock @tanstack/react-query

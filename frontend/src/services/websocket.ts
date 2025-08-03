@@ -29,7 +29,7 @@ export class WebSocketService {
       this.connected = false;
     };
 
-    this.client.onStompError = (frame) => {
+    this.client.onStompError = frame => {
       console.error('WebSocket error:', frame.headers['message']);
       this.reconnectAttempts++;
       if (this.reconnectAttempts >= this.maxReconnectAttempts) {

@@ -5,7 +5,7 @@ export enum EnergyType {
   SOLAR = 'SOLAR',
   WIND = 'WIND',
   NUCLEAR = 'NUCLEAR',
-  HYDRO = 'HYDRO'
+  HYDRO = 'HYDRO',
 }
 
 export interface EnergyPrice {
@@ -37,5 +37,5 @@ export const ENERGY_COLORS: Record<EnergyType, string> = {
   [EnergyType.SOLAR]: '#f59e0b', // yellow
   [EnergyType.WIND]: '#10b981', // green
   [EnergyType.NUCLEAR]: '#8b5cf6', // purple
-  [EnergyType.HYDRO]: '#06b6d4' // cyan
+  [EnergyType.HYDRO]: '#06b6d4', // cyan
 };
