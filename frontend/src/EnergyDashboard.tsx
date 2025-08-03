@@ -12,7 +12,19 @@ const ENERGY_CONFIG = {
   WIND: { name: 'Wind', icon: '💨', description: 'Clean and infinite' },
   GAS: { name: 'Natural Gas', icon: '🔥', description: 'Bridge to tomorrow' },
   COAL: { name: 'Coal', icon: '⚫', description: 'Yesterday\'s fuel' }
-};
+} as const;
+
+// Safely returns a config object for the given energy type.
+// Falls back to a generic placeholder if the type is not predefined in ENERGY_CONFIG.
+function getEnergyConfig(type: string) {
+  return (
+    ENERGY_CONFIG[type as keyof typeof ENERGY_CONFIG] ?? {
+      name: type.charAt(0).toUpperCase() + type.slice(1).toLowerCase(),
+      icon: '❓',
+      description: 'Energy source not recognized'
+    }
+  );
+}
 
 export function EnergyDashboard() {
   const [prices, setPrices] = useState<Price[]>([]);
@@ -67,7 +79,7 @@ export function EnergyDashboard() {
             <h2 className="text-3xl font-light mb-8 text-green-400">The Future</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {futureEnergy.map(({ type, price, change }) => {
-                const config = ENERGY_CONFIG[type as keyof typeof ENERGY_CONFIG];
+                const config = getEnergyConfig(type);
                 const trend = change > 0 ? '📈' : '📉';
                 
                 return (
@@ -122,7 +134,7 @@ export function EnergyDashboard() {
             <h2 className="text-3xl font-light mb-8 text-gray-400">The Past</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {pastEnergy.map(({ type, price, change }) => {
-                const config = ENERGY_CONFIG[type as keyof typeof ENERGY_CONFIG];
+                const config = getEnergyConfig(type);
                 const trend = change > 0 ? '📈' : '📉';
                 
                 return (
