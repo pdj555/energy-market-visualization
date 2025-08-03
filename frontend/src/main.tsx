@@ -1,22 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-
-import App from './App';
+import { EnergyDashboard } from './EnergyDashboard';
 import './index.css';
 
-/**
- * Application entry point - renders the main App component.
- */
-const rootElement = document.getElementById('root');
-
-if (rootElement === null) {
-  throw new Error('Root element not found');
-}
-
-const root = ReactDOM.createRoot(rootElement);
-
-root.render(
+ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
+    <EnergyDashboard />
   </React.StrictMode>
 );
