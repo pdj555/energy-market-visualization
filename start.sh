@@ -40,7 +40,7 @@ sleep 10
 echo ""
 echo "Starting frontend server on port 5173..."
 cd ../frontend
-npm run dev &
+pnpm run dev &
 FRONTEND_PID=$!
 
 echo ""
