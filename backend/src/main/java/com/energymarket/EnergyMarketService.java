@@ -12,52 +12,28 @@ public class EnergyMarketService {
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     
     static {
-        // Initialize with purposeful values - not random noise
-        markets.put("SOLAR", new Market(20.0, 0.15, true));  // Cheapest, most volatile, future
-        markets.put("WIND", new Market(25.0, 0.10, true));   // Cheap, stable, future
-        markets.put("GAS", new Market(30.0, 0.08, false));   // Expensive, volatile, past
-        markets.put("COAL", new Market(40.0, 0.05, false));  // Most expensive, dying
+        markets.put("SOLAR", new Market(20.0, 0.15, true));
+        markets.put("WIND", new Market(25.0, 0.10, true));
+        markets.put("GAS", new Market(30.0, 0.08, false));
+        markets.put("COAL", new Market(40.0, 0.05, false));
     }
     
     public static void main(String[] args) throws Exception {
-        // Simple HTTP server - no framework needed
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+        server.setExecutor(null); // Use default executor
         
-        // API endpoint
         server.createContext("/api/energy", exchange -> {
             exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
             exchange.getResponseHeaders().add("Content-Type", "application/json");
             
             String response = toJson();
             exchange.sendResponseHeaders(200, response.length());
-            exchange.getResponseBody().write(response.getBytes());
-            exchange.close();
+            try (OutputStream os = exchange.getResponseBody()) {
+                os.write(response.getBytes());
+            }
         });
         
-        // WebSocket endpoint (SSE fallback for simplicity)
-        server.createContext("/stream", exchange -> {
-            exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
-            exchange.getResponseHeaders().add("Content-Type", "text/event-stream");
-            exchange.getResponseHeaders().add("Cache-Control", "no-cache");
-            exchange.sendResponseHeaders(200, 0);
-            
-            OutputStream out = exchange.getResponseBody();
-            
-            // Stream updates every second
-            ScheduledFuture<?> streamer = scheduler.scheduleAtFixedRate(() -> {
-                try {
-                    out.write(("data: " + toJson() + "\n\n").getBytes());
-                    out.flush();
-                } catch (IOException e) {
-                    // Client disconnected
-                }
-            }, 0, 1, TimeUnit.SECONDS);
-            
-            // Cleanup on disconnect
-            exchange.getHttpContext().getServer().removeContext(exchange.getHttpContext());
-        });
-        
-        // Start evolution
+        // Start price evolution
         scheduler.scheduleAtFixedRate(EnergyMarketService::evolve, 0, 1, TimeUnit.SECONDS);
         
         server.start();
@@ -66,16 +42,15 @@ public class EnergyMarketService {
     
     private static void evolve() {
         markets.forEach((type, market) -> {
-            double trend = market.isFuture ? 0.001 : -0.001; // Future energy gets cheaper
+            double trend = market.isFuture ? -0.001 : 0.001;
             double noise = (Math.random() - 0.5) * market.volatility;
             double change = trend + noise;
             
             market.price *= (1 + change);
             market.change = change * 100;
             
-            // Reality constraints
-            market.price = Math.max(market.price, 5.0);  // Nothing is free
-            market.price = Math.min(market.price, 100.0); // Nothing is astronomical
+            market.price = Math.max(market.price, 5.0);
+            market.price = Math.min(market.price, 100.0);
         });
     }
     
@@ -92,7 +67,9 @@ public class EnergyMarketService {
                 ));
             });
         
-        json.setLength(json.length() - 1); // Remove trailing comma
+        if (json.charAt(json.length() - 1) == ',') {
+            json.setLength(json.length() - 1);
+        }
         json.append("],\"timestamp\":").append(System.currentTimeMillis()).append("}");
         
         return json.toString();

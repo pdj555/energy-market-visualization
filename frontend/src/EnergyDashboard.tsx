@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface Price {
   type: string;
@@ -17,39 +17,42 @@ const ENERGY_CONFIG = {
 export function EnergyDashboard() {
   const [prices, setPrices] = useState<Price[]>([]);
   const [connected, setConnected] = useState(false);
-  const eventSourceRef = useRef<EventSource | null>(null);
 
   useEffect(() => {
-    // Use Server-Sent Events - simpler, more reliable
-    const eventSource = new EventSource('http://localhost:8080/stream');
-    eventSourceRef.current = eventSource;
-    
-    eventSource.onopen = () => setConnected(true);
-    eventSource.onerror = () => setConnected(false);
-    
-    eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      setPrices(data.prices);
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/energy');
+        if (response.ok) {
+          const data = await response.json();
+          setPrices(data.prices);
+          setConnected(true);
+        } else {
+          setConnected(false);
+        }
+      } catch (error) {
+        setConnected(false);
+      }
     };
 
-    return () => {
-      eventSource.close();
-    };
+    // Initial fetch
+    fetchData();
+
+    // Poll every second
+    const interval = setInterval(fetchData, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
-  // Split into future and past
   const futureEnergy = prices.filter(p => p.future);
   const pastEnergy = prices.filter(p => !p.future);
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
-      {/* Dynamic gradient background */}
       <div className="fixed inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-green-900/10 via-black to-gray-900/10 animate-gradient" />
+        <div className="absolute inset-0 bg-gradient-to-br from-green-900/10 via-black to-gray-900/10" />
       </div>
 
       <div className="relative z-10 p-8 md:p-16 max-w-7xl mx-auto">
-        {/* Header */}
         <header className="mb-20 text-center">
           <h1 className="text-7xl md:text-8xl font-extralight tracking-tighter mb-4">
             Energy Transition
@@ -59,9 +62,7 @@ export function EnergyDashboard() {
           </p>
         </header>
 
-        {/* The Story */}
         <div className="space-y-16">
-          {/* Future Energy */}
           <section>
             <h2 className="text-3xl font-light mb-8 text-green-400">The Future</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -106,7 +107,6 @@ export function EnergyDashboard() {
             </div>
           </section>
 
-          {/* Divider */}
           <div className="relative py-8">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-white/10"></div>
@@ -118,7 +118,6 @@ export function EnergyDashboard() {
             </div>
           </div>
 
-          {/* Past Energy */}
           <section>
             <h2 className="text-3xl font-light mb-8 text-gray-400">The Past</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -161,7 +160,6 @@ export function EnergyDashboard() {
           </section>
         </div>
 
-        {/* Connection Status */}
         <div className="fixed bottom-8 left-8">
           <div className={`px-4 py-2 rounded-full backdrop-blur-lg transition-all duration-300 ${
             connected 
@@ -171,7 +169,7 @@ export function EnergyDashboard() {
             <span className={`text-sm font-light ${
               connected ? 'text-white/60' : 'text-red-400'
             }`}>
-              {connected ? 'Live data streaming' : 'Reconnecting...'}
+              {connected ? 'Live data' : 'Reconnecting...'}
             </span>
           </div>
         </div>

@@ -21,32 +21,58 @@ jobs:
         with:
           node-version: '20'
           
-      # Backend - it should just work
-      - name: Backend
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          
+      # Backend - compile and test
+      - name: Backend Build
         run: |
           cd backend
           mvn compile
-          mvn spring-boot:run &
-          sleep 10
+          
+      - name: Backend Test
+        run: |
+          cd backend
+          # Start server in background
+          java -cp target/classes com.energymarket.EnergyMarketService &
+          SERVER_PID=$!
+          
+          # Wait for server to be ready
+          echo "Waiting for server to start..."
+          for i in {1..30}; do
+            if curl -f http://localhost:8080/api/energy >/dev/null 2>&1; then
+              echo "Server is ready!"
+              break
+            fi
+            if [ $i -eq 30 ]; then
+              echo "Server failed to start"
+              kill $SERVER_PID 2>/dev/null || true
+              exit 1
+            fi
+            sleep 1
+          done
+          
+          # Test the API
           curl -f http://localhost:8080/api/energy || exit 1
           
-      # Frontend - it should be beautiful
-      - name: Frontend
-        run: |
-          cd frontend
-          npm install
-          npm run build
-          # Check build size - excellence means efficiency
-          size=$(du -sb dist | cut -f1)
-          if [ $size -gt 1048576 ]; then
-            echo "Build too large: ${size} bytes"
-            exit 1
-          fi
+          # Clean up
+          kill $SERVER_PID
           
-      # The real test - does it work?
-      - name: Integration
+      # Frontend - build with pnpm
+      - name: Frontend Build
         run: |
           cd frontend
-          npm run preview &
-          sleep 5
-          curl -f http://localhost:4173 || exit 1 
+          pnpm install
+          pnpm run build
+          
+          # Check build output exists
+          [ -d dist ] || exit 1
+          
+          # Check build size is reasonable (under 1MB)
+          size=$(du -sb dist | cut -f1)
+          echo "Build size: $size bytes"
+          if [ $size -gt 1048576 ]; then
+            echo "Build too large!"
+            exit 1
+          fi 
