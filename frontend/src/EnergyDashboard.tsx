@@ -1,160 +1,177 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Client } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
 
 interface Price {
   type: string;
   price: number;
   change: number;
+  future: boolean;
 }
 
 const ENERGY_CONFIG = {
-  ELECTRICITY: { color: '#3B82F6', name: 'Electricity', icon: '⚡' },
-  GAS: { color: '#F59E0B', name: 'Natural Gas', icon: '🔥' },
-  SOLAR: { color: '#FCD34D', name: 'Solar', icon: '☀️' },
-  WIND: { color: '#10B981', name: 'Wind', icon: '💨' }
+  SOLAR: { name: 'Solar', icon: '☀️', description: 'The future is bright' },
+  WIND: { name: 'Wind', icon: '💨', description: 'Clean and infinite' },
+  GAS: { name: 'Natural Gas', icon: '🔥', description: 'Bridge to tomorrow' },
+  COAL: { name: 'Coal', icon: '⚫', description: 'Yesterday\'s fuel' }
 };
 
 export function EnergyDashboard() {
   const [prices, setPrices] = useState<Price[]>([]);
   const [connected, setConnected] = useState(false);
-  const previousPrices = useRef<Record<string, number>>({});
+  const eventSourceRef = useRef<EventSource | null>(null);
 
   useEffect(() => {
-    const client = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
-      onConnect: () => {
-        setConnected(true);
-        client.subscribe('/topic/energy', message => {
-          const data = JSON.parse(message.body);
-          setPrices(data.prices);
-        });
-      },
-      onDisconnect: () => setConnected(false),
-      reconnectDelay: 5000,
-    });
+    // Use Server-Sent Events - simpler, more reliable
+    const eventSource = new EventSource('http://localhost:8080/stream');
+    eventSourceRef.current = eventSource;
+    
+    eventSource.onopen = () => setConnected(true);
+    eventSource.onerror = () => setConnected(false);
+    
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setPrices(data.prices);
+    };
 
-    client.activate();
-    return () => client.deactivate();
+    return () => {
+      eventSource.close();
+    };
   }, []);
 
-  // Track price changes for animations
-  useEffect(() => {
-    prices.forEach(({ type, price }) => {
-      previousPrices.current[type] = price;
-    });
-  }, [prices]);
+  // Split into future and past
+  const futureEnergy = prices.filter(p => p.future);
+  const pastEnergy = prices.filter(p => !p.future);
 
   return (
-    <div className="min-h-screen bg-black overflow-hidden">
-      {/* Subtle animated background */}
-      <div className="fixed inset-0 opacity-30">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-black to-green-900/20" />
+    <div className="min-h-screen bg-black text-white overflow-hidden">
+      {/* Dynamic gradient background */}
+      <div className="fixed inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-green-900/10 via-black to-gray-900/10 animate-gradient" />
       </div>
 
-      <div className="relative z-10 p-8 md:p-12">
-        {/* Header with connection status integrated */}
-        <header className="mb-16">
-          <h1 className="text-6xl md:text-7xl font-extralight tracking-tight text-white mb-4">
-            Energy Market
+      <div className="relative z-10 p-8 md:p-16 max-w-7xl mx-auto">
+        {/* Header */}
+        <header className="mb-20 text-center">
+          <h1 className="text-7xl md:text-8xl font-extralight tracking-tighter mb-4">
+            Energy Transition
           </h1>
-          <div className="h-px w-24 bg-gradient-to-r from-white/60 to-transparent" />
+          <p className="text-xl text-white/60 font-light">
+            Watch the future unfold in real-time
+          </p>
         </header>
 
-        {/* Price cards with proper animation and interaction */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl">
-          {prices.map(({ type, price, change }) => {
-            const config = ENERGY_CONFIG[type as keyof typeof ENERGY_CONFIG];
-            const isRising = change > 0;
-            const previousPrice = previousPrices.current[type] || price;
-            const priceChanged = Math.abs(price - previousPrice) > 0.01;
-            
-            return (
-              <div
-                key={type}
-                className="relative group cursor-pointer transform transition-all duration-300 hover:scale-105"
-              >
-                {/* Glow effect on price change */}
-                {priceChanged && (
-                  <div 
-                    className="absolute inset-0 rounded-3xl blur-xl animate-pulse"
-                    style={{ 
-                      background: config.color,
-                      opacity: 0.3
-                    }} 
-                  />
-                )}
-
-                {/* Card */}
-                <div className="relative bg-white/5 backdrop-blur-lg rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-all duration-300">
-                  {/* Energy type header */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">{config.icon}</span>
-                      <h3 className="text-lg font-medium text-white/80">
-                        {config.name}
-                      </h3>
-                    </div>
-                    {/* Live indicator */}
-                    {connected && (
-                      <div 
-                        className="w-2 h-2 rounded-full animate-pulse"
-                        style={{ backgroundColor: config.color }}
-                      />
-                    )}
-                  </div>
-
-                  {/* Price display */}
-                  <div className="space-y-2">
-                    <div className="text-5xl font-extralight tracking-tight text-white">
-                      ${price.toFixed(2)}
+        {/* The Story */}
+        <div className="space-y-16">
+          {/* Future Energy */}
+          <section>
+            <h2 className="text-3xl font-light mb-8 text-green-400">The Future</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {futureEnergy.map(({ type, price, change }) => {
+                const config = ENERGY_CONFIG[type as keyof typeof ENERGY_CONFIG];
+                const trend = change > 0 ? '📈' : '📉';
+                
+                return (
+                  <div
+                    key={type}
+                    className="group relative bg-gradient-to-br from-green-500/10 to-transparent backdrop-blur-xl rounded-3xl p-8 border border-green-500/20 hover:border-green-500/40 transition-all duration-500 hover:scale-[1.02]"
+                  >
+                    <div className="flex items-start justify-between mb-6">
+                      <div>
+                        <div className="flex items-center gap-3 mb-2">
+                          <span className="text-4xl">{config.icon}</span>
+                          <h3 className="text-2xl font-light">{config.name}</h3>
+                        </div>
+                        <p className="text-sm text-white/50">{config.description}</p>
+                      </div>
+                      {connected && (
+                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                      )}
                     </div>
                     
-                    {/* Change indicator */}
-                    <div className={`flex items-center gap-2 text-sm font-medium ${
-                      isRising ? 'text-green-400' : 'text-red-400'
-                    }`}>
-                      <span className="text-lg">
-                        {isRising ? '↗' : '↘'}
-                      </span>
-                      <span>{Math.abs(change).toFixed(2)}%</span>
+                    <div className="space-y-4">
+                      <div className="text-5xl font-extralight">
+                        ${price.toFixed(2)}
+                        <span className="text-lg text-white/50 ml-2">per MWh</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 text-green-400">
+                        <span className="text-2xl">{trend}</span>
+                        <span className="text-lg font-light">
+                          {Math.abs(change).toFixed(2)}% {change > 0 ? 'up' : 'down'}
+                        </span>
+                      </div>
                     </div>
                   </div>
+                );
+              })}
+            </div>
+          </section>
 
-                  {/* Subtle chart line */}
-                  <div className="mt-6 h-16 relative overflow-hidden">
-                    <svg className="absolute inset-0 w-full h-full">
-                      <polyline
-                        fill="none"
-                        stroke={config.color}
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        points={`0,${isRising ? 60 : 10} 50,30 100,${isRising ? 10 : 60}`}
-                        opacity="0.5"
-                      />
-                    </svg>
+          {/* Divider */}
+          <div className="relative py-8">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/10"></div>
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-black px-6 text-white/40 text-sm uppercase tracking-wider">
+                The Transition
+              </span>
+            </div>
+          </div>
+
+          {/* Past Energy */}
+          <section>
+            <h2 className="text-3xl font-light mb-8 text-gray-400">The Past</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {pastEnergy.map(({ type, price, change }) => {
+                const config = ENERGY_CONFIG[type as keyof typeof ENERGY_CONFIG];
+                const trend = change > 0 ? '📈' : '📉';
+                
+                return (
+                  <div
+                    key={type}
+                    className="group relative bg-gradient-to-br from-gray-500/10 to-transparent backdrop-blur-xl rounded-3xl p-8 border border-gray-500/20 hover:border-gray-500/40 transition-all duration-500 hover:scale-[1.02] opacity-80"
+                  >
+                    <div className="flex items-start justify-between mb-6">
+                      <div>
+                        <div className="flex items-center gap-3 mb-2">
+                          <span className="text-4xl grayscale">{config.icon}</span>
+                          <h3 className="text-2xl font-light">{config.name}</h3>
+                        </div>
+                        <p className="text-sm text-white/50">{config.description}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div className="text-5xl font-extralight text-gray-300">
+                        ${price.toFixed(2)}
+                        <span className="text-lg text-white/50 ml-2">per MWh</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-2 text-red-400">
+                        <span className="text-2xl">{trend}</span>
+                        <span className="text-lg font-light">
+                          {Math.abs(change).toFixed(2)}% {change > 0 ? 'up' : 'down'}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          </section>
         </div>
 
-        {/* Connection status - subtle, integrated */}
-        <div className="fixed bottom-8 right-8">
-          <div className={`flex items-center gap-3 px-4 py-2 rounded-full backdrop-blur-lg transition-all duration-300 ${
+        {/* Connection Status */}
+        <div className="fixed bottom-8 left-8">
+          <div className={`px-4 py-2 rounded-full backdrop-blur-lg transition-all duration-300 ${
             connected 
-              ? 'bg-green-500/10 border border-green-500/20' 
+              ? 'bg-white/5 border border-white/10' 
               : 'bg-red-500/10 border border-red-500/20'
           }`}>
-            <div className={`w-2 h-2 rounded-full ${
-              connected ? 'bg-green-500 animate-pulse' : 'bg-red-500'
-            }`} />
-            <span className={`text-sm font-medium ${
-              connected ? 'text-green-400' : 'text-red-400'
+            <span className={`text-sm font-light ${
+              connected ? 'text-white/60' : 'text-red-400'
             }`}>
-              {connected ? 'Live' : 'Reconnecting...'}
+              {connected ? 'Live data streaming' : 'Reconnecting...'}
             </span>
           </div>
         </div>
