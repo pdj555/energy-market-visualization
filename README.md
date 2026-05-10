@@ -63,6 +63,18 @@ npm run lint         # ESLint
 npm run type-check   # TypeScript compiler checks
 ```
 
+### Frontend environment
+
+Copy [`frontend/.env.example`](frontend/.env.example) when the dashboard needs to talk to an API
+origin other than the current host. Leave `VITE_API_BASE_URL` blank for same-origin deployments and
+local Vite proxying; set it to the API origin for split frontend/backend hosting.
+
+```bash
+cd frontend
+cp .env.example .env.local
+# VITE_API_BASE_URL=https://api.energy-intelligence.example.com
+```
+
 ### Key UI features
 
 - Market picker with history/forecast controls and refresh action.

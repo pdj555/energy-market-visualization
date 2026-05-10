@@ -29,14 +29,14 @@ const PriceChart: FC<PriceChartProps> = ({ priceSeries, selectedMarketName }) =>
       return { labels: [], datasets: [] };
     }
 
-    const labels = priceSeries.map((point) => formatTimeLabel(point.timestamp));
+    const labels = priceSeries.map(point => formatTimeLabel(point.timestamp));
 
     return {
       labels,
       datasets: [
         {
           label: `${selectedMarketName} price ($/MWh)`,
-          data: priceSeries.map((point) => Number(point.priceMwh.toFixed(2))),
+          data: priceSeries.map(point => Number(point.priceMwh.toFixed(2))),
           borderColor: '#38bdf8',
           backgroundColor: 'rgba(56, 189, 248, 0.2)',
           fill: true,
@@ -47,7 +47,7 @@ const PriceChart: FC<PriceChartProps> = ({ priceSeries, selectedMarketName }) =>
         },
         {
           label: 'Demand (MW)',
-          data: priceSeries.map((point) => Number(point.demandMw.toFixed(0))),
+          data: priceSeries.map(point => Number(point.demandMw.toFixed(0))),
           borderColor: '#34d399',
           backgroundColor: 'rgba(52, 211, 153, 0.12)',
           fill: true,
@@ -96,7 +96,7 @@ const PriceChart: FC<PriceChartProps> = ({ priceSeries, selectedMarketName }) =>
           position: 'left',
           ticks: {
             color: '#cbd5f5',
-            callback: (value) => `$${value}`,
+            callback: value => `$${value}`,
           },
           grid: {
             color: 'rgba(148, 163, 184, 0.08)',
@@ -106,7 +106,7 @@ const PriceChart: FC<PriceChartProps> = ({ priceSeries, selectedMarketName }) =>
           position: 'right',
           ticks: {
             color: '#cbd5f5',
-            callback: (value) => `${value} MW`,
+            callback: value => `${value} MW`,
           },
           grid: {
             drawOnChartArea: false,
@@ -114,18 +114,18 @@ const PriceChart: FC<PriceChartProps> = ({ priceSeries, selectedMarketName }) =>
         },
       },
     }),
-    [],
+    []
   );
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="mb-4 flex items-center justify-between">
+    <div className='flex h-full flex-col'>
+      <div className='mb-4 flex items-center justify-between'>
         <div>
-          <h3 className="text-lg font-semibold text-slate-100">Price &amp; demand dynamics</h3>
-          <p className="text-xs text-slate-400">{selectedMarketName}</p>
+          <h3 className='text-lg font-semibold text-slate-100'>Price &amp; demand dynamics</h3>
+          <p className='text-xs text-slate-400'>{selectedMarketName}</p>
         </div>
       </div>
-      <div className="flex-1">
+      <div className='flex-1'>
         <Line data={chartData} options={options} />
       </div>
     </div>
