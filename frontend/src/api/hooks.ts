@@ -34,10 +34,7 @@ export function useMarketOverview() {
   });
 }
 
-export function useMarketSnapshot(
-  marketCode: string | undefined,
-  params: SnapshotRequestParams,
-) {
+export function useMarketSnapshot(marketCode: string | undefined, params: SnapshotRequestParams) {
   return useQuery({
     queryKey: snapshotQueryKey(marketCode, params),
     queryFn: () => {

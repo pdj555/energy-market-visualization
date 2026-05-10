@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactElement } from 'react';
 import DashboardHeader from '@/components/DashboardHeader';
 import ErrorState from '@/components/ErrorState';
 import ForecastTable from '@/components/ForecastTable';
@@ -8,9 +8,13 @@ import MarketSummaryGrid from '@/components/MarketSummaryGrid';
 import PriceChart from '@/components/PriceChart';
 import { useMarketCatalog, useMarketOverview, useMarketSnapshot } from '@/api/hooks';
 
-const App = (): JSX.Element => {
-  const { data: catalog, isLoading: catalogLoading, isError: catalogError, refetch: refetchCatalog } =
-    useMarketCatalog();
+const App = (): ReactElement => {
+  const {
+    data: catalog,
+    isLoading: catalogLoading,
+    isError: catalogError,
+    refetch: refetchCatalog,
+  } = useMarketCatalog();
   const {
     data: overview,
     isLoading: overviewLoading,
@@ -27,7 +31,7 @@ const App = (): JSX.Element => {
 
   useEffect(() => {
     if (!selectedMarket && catalog && catalog.length > 0) {
-      setSelectedMarket(catalog[0].code);
+      setSelectedMarket(catalog[0]?.code);
     }
   }, [catalog, selectedMarket]);
 
@@ -38,7 +42,7 @@ const App = (): JSX.Element => {
       forecastHours,
       forecastResolutionMinutes,
     }),
-    [historyHours, historyResolutionMinutes, forecastHours, forecastResolutionMinutes],
+    [historyHours, historyResolutionMinutes, forecastHours, forecastResolutionMinutes]
   );
 
   const {
@@ -69,7 +73,7 @@ const App = (): JSX.Element => {
   const isRefreshing = snapshotFetching || overviewFetching;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className='min-h-screen bg-slate-950 text-slate-100'>
       <DashboardHeader
         markets={catalog}
         selectedMarket={selectedMarket}
@@ -84,10 +88,10 @@ const App = (): JSX.Element => {
         onForecastHoursChange={setForecastHours}
         onRefresh={handleRefresh}
       />
-      <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-8">
+      <main className='mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-8'>
         <section>
-          <h2 className="text-xl font-semibold text-slate-200">Market overview</h2>
-          <p className="text-sm text-slate-400">
+          <h2 className='text-xl font-semibold text-slate-200'>Market overview</h2>
+          <p className='text-sm text-slate-400'>
             Select a market to explore intraday fundamentals, price formation and forecasted risk.
           </p>
           <MarketSummaryGrid
@@ -96,15 +100,18 @@ const App = (): JSX.Element => {
             onSelectMarket={setSelectedMarket}
           />
         </section>
-        <section className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-6 shadow-lg shadow-slate-950/40 lg:col-span-2">
-            <PriceChart priceSeries={snapshot.priceSeries} selectedMarketName={snapshot.overview.name} />
+        <section className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
+          <div className='rounded-2xl border border-slate-800/80 bg-slate-900/60 p-6 shadow-lg shadow-slate-950/40 lg:col-span-2'>
+            <PriceChart
+              priceSeries={snapshot.priceSeries}
+              selectedMarketName={snapshot.overview.name}
+            />
           </div>
-          <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-6 shadow-lg shadow-slate-950/40">
+          <div className='rounded-2xl border border-slate-800/80 bg-slate-900/60 p-6 shadow-lg shadow-slate-950/40'>
             <ForecastTable forecast={snapshot.forecast} />
           </div>
         </section>
-        <section className="rounded-2xl border border-slate-800/80 bg-slate-900/60 p-6 shadow-lg shadow-slate-950/40">
+        <section className='rounded-2xl border border-slate-800/80 bg-slate-900/60 p-6 shadow-lg shadow-slate-950/40'>
           <InsightsPanel insights={snapshot.insights} marketName={snapshot.overview.name} />
         </section>
       </main>
