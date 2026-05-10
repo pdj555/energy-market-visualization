@@ -9,7 +9,7 @@
   ],
   "ignorePatterns": [
     "dist",
-    "coverage", 
+    "coverage",
     "node_modules",
     "*.js"
   ],
@@ -28,7 +28,8 @@
     "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/no-explicit-any": "error",
     "prefer-const": "error",
-    "no-var": "error"
+    "no-var": "error",
+    "no-undef": "off"
   },
   "settings": {
     "react": {
@@ -38,4 +39,4 @@
   "globals": {
     "JSX": "readonly"
   }
-} 
+}

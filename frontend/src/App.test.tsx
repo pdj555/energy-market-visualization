@@ -155,13 +155,14 @@ const mockSnapshot = {
 describe('App Component', () => {
   beforeEach(() => {
     vi.spyOn(global, 'fetch').mockImplementation((input: RequestInfo | URL) => {
-      const url = typeof input === 'string' ? input : input instanceof Request ? input.url : input.toString();
+      const url =
+        typeof input === 'string' ? input : input instanceof Request ? input.url : input.toString();
       if (url.endsWith('/api/markets/catalog')) {
         return Promise.resolve(
           new Response(JSON.stringify(mockCatalog), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
-          }),
+          })
         );
       }
       if (url.endsWith('/api/markets/overview')) {
@@ -169,7 +170,7 @@ describe('App Component', () => {
           new Response(JSON.stringify(mockOverview), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
-          }),
+          })
         );
       }
       if (url.includes('/api/markets/NEISO/snapshot')) {
@@ -177,7 +178,7 @@ describe('App Component', () => {
           new Response(JSON.stringify(mockSnapshot), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
-          }),
+          })
         );
       }
       return Promise.reject(new Error(`Unhandled request: ${url}`));
@@ -200,7 +201,7 @@ describe('App Component', () => {
     return render(
       <QueryClientProvider client={queryClient}>
         <App />
-      </QueryClientProvider>,
+      </QueryClientProvider>
     );
   };
 
@@ -208,7 +209,7 @@ describe('App Component', () => {
     renderApp();
 
     expect(await screen.findByText('Energy Market Intelligence Console')).toBeInTheDocument();
-    expect(await screen.findByText('ISO New England Hub')).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'ISO New England Hub' })).toBeInTheDocument();
     expect(await screen.findByText('$88.20')).toBeInTheDocument();
 
     const chart = await screen.findByTestId('mock-line-chart');

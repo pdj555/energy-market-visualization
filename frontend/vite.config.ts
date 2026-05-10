@@ -41,10 +41,20 @@ export default defineConfig({
     minify: 'esbuild',
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          charts: ['chart.js', 'react-chartjs-2'],
-          websocket: ['sockjs-client', '@stomp/stompjs'],
+        manualChunks: (id: string): string | undefined => {
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+            return 'vendor';
+          }
+
+          if (id.includes('node_modules/chart.js') || id.includes('node_modules/react-chartjs-2')) {
+            return 'charts';
+          }
+
+          if (id.includes('node_modules/sockjs-client') || id.includes('node_modules/@stomp/stompjs')) {
+            return 'websocket';
+          }
+
+          return undefined;
         },
       },
     },
@@ -53,7 +63,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: './src/test/setup.ts',
+    setupFiles: './src/test/setup.tsx',
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
