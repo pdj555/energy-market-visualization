@@ -22,7 +22,7 @@ jobs:
           cache: maven
       - name: Backend tests
         working-directory: backend
-        run: mvn test -B -Dspring.profiles.active=test
+        run: mvn spotless:apply test -B -Dspring.profiles.active=test
 
   frontend:
     runs-on: ubuntu-latest
