@@ -72,7 +72,7 @@ public enum MarketCode {
     return code;
   }
 
-  public String name() {
+  public String displayName() {
     return name;
   }
 
