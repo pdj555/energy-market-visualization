@@ -20,7 +20,7 @@ class MarketControllerTest {
   @BeforeEach
   void setUp() {
     Clock clock = Clock.fixed(Instant.parse("2025-01-15T12:00:00Z"), ZoneOffset.UTC);
-    MarketDataService service = new MarketDataService(clock, new MarketDataGenerator());
+    MarketDataService service = new MarketDataService(clock);
     MarketController controller = new MarketController(service);
     this.webTestClient =
         WebTestClient.bindToController(controller)
