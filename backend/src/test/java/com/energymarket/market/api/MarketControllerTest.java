@@ -2,7 +2,6 @@ package com.energymarket.market.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.energymarket.market.generator.MarketDataGenerator;
 import com.energymarket.market.model.MarketMetadata;
 import com.energymarket.market.service.MarketDataService;
 import java.time.Clock;
