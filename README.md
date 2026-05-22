@@ -1,88 +1,45 @@
 # Energy Market Visualization
 
-Synthetic wholesale electricity telemetry for product and analytics experiments. A reactive Spring Boot API generates deterministic market data; a React dashboard renders price, demand, carbon, and forecast views without live ISO feeds.
-
-## System architecture
+Synthetic wholesale power telemetry. Reactive API. Analytics dashboard. No live ISO feeds required.
 
 ```mermaid
-flowchart TB
-  subgraph Backend["Spring Boot / Java 22"]
-    G[MarketDataGenerator]
-    S[MarketDataService]
-    API["/api/markets/*"]
-    G --> S --> API
-  end
-
-  subgraph Frontend["React 19 / Vite"]
-    Q[TanStack Query]
-    CH[Chart.js views]
-    UI[Dashboard]
-    Q --> CH --> UI
-  end
-
-  API --> Q
+flowchart LR
+  G[Generator] --> API[Spring API]
+  API --> UI[React dashboard]
 ```
 
-## Markets covered
+## Get started
 
-Deterministic synthetic series for five North American ISOs: **CAISO**, **ERCOT**, **MISO**, **NEISO**, **PJM**.
+```bash
+cd backend && mvn spring-boot:run
+cd frontend && npm install && npm run dev   # http://localhost:3000
+```
 
-Each market exposes price, load, carbon intensity, renewable share, volatility metrics, and short-horizon forecast envelopes.
+## Overview
 
-## API
+Five deterministic markets: **CAISO**, **ERCOT**, **MISO**, **NEISO**, **PJM**.
 
-| Endpoint | Description |
-| --- | --- |
-| `GET /api/markets/catalog` | Market metadata and regions |
+Each exposes price, load, carbon intensity, renewable share, volatility, and short-horizon forecast envelopes — reproducible on every run.
+
+| Endpoint | Returns |
+| :-- | :-- |
+| `GET /api/markets/catalog` | Market metadata |
 | `GET /api/markets/overview` | Cross-market snapshot |
-| `GET /api/markets/{code}/snapshot` | History, forecast, and insights for one market |
+| `GET /api/markets/{code}/snapshot` | History, forecast, insights |
 
-Query parameters control history window, resolution, and forecast horizon on snapshot requests.
+Snapshot query params control history window, resolution, and forecast horizon.
 
-## Quick start
+Split hosting: set `VITE_API_BASE_URL` in `frontend/.env.local` (see `.env.example`).
 
-**Backend**
+## Reference
 
-```bash
-cd backend
-mvn spring-boot:run
-```
-
-**Frontend**
+**Verify.**
 
 ```bash
-cd frontend
-npm install
-npm run dev    # http://localhost:3000
+cd backend && mvn test
+cd frontend && npm run type-check && npm run test:ci && npm run build
 ```
 
-For split hosting, copy `frontend/.env.example` to `.env.local` and set `VITE_API_BASE_URL` to the API origin.
+Requires Java 22+, Maven 3.9+, Node 20+.
 
-## Quality gates
-
-```bash
-cd backend && mvn spotless:apply test
-cd frontend && npm run type-check && npm run lint && npm run test:ci && npm run build
-```
-
-Combined pre-commit script:
-
-```bash
-scripts/pre-commit-quality-check.sh
-```
-
-## Dashboard features
-
-- Multi-market overview with price movement and sustainability metrics
-- Configurable history and forecast windows per market
-- Dual-axis price and demand chart
-- Forecast table with confidence bounds
-- Insights panel for volatility, demand statistics, and anomaly flags
-
-## Prerequisites
-
-Node.js 20+, npm 10+, Java 22+, Maven 3.9+.
-
-## License
-
-MIT. See [LICENSE](LICENSE).
+MIT · [LICENSE](LICENSE)
