@@ -266,6 +266,7 @@
                 <configuration>
                     <release>${maven.compiler.target}</release>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                    <parameters>true</parameters>
                     <showWarnings>true</showWarnings>
                     <showDeprecation>true</showDeprecation>
                     <compilerArgs>
