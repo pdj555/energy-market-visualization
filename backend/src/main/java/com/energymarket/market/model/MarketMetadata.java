@@ -2,9 +2,7 @@ package com.energymarket.market.model;
 
 import java.util.Objects;
 
-/**
- * Immutable metadata describing a wholesale electricity market.
- */
+/** Immutable metadata describing a wholesale electricity market. */
 public record MarketMetadata(
     String code,
     String name,

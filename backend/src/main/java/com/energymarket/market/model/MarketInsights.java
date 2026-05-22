@@ -4,9 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Statistical insights summarising market behaviour over a time window.
- */
+/** Statistical insights summarising market behaviour over a time window. */
 public record MarketInsights(
     Instant windowStart,
     Instant windowEnd,

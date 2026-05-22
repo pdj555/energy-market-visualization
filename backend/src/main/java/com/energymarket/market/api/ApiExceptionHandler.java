@@ -10,9 +10,7 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-/**
- * Centralised error handling for the market API, returning RFC7807 responses.
- */
+/** Centralised error handling for the market API, returning RFC7807 responses. */
 @RestControllerAdvice
 public class ApiExceptionHandler {
 

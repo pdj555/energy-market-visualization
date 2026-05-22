@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Provides application wide time configuration.
  *
- * <p>Having the clock as a managed bean enables deterministic testing and a single source of
- * truth for all time based calculations across the service.
+ * <p>Having the clock as a managed bean enables deterministic testing and a single source of truth
+ * for all time based calculations across the service.
  */
 @Configuration
 public class ClockConfiguration {
