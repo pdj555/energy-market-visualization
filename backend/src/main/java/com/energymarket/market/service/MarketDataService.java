@@ -43,7 +43,7 @@ public class MarketDataService {
   public List<MarketMetadata> getMarketCatalog() {
     return Arrays.stream(MarketCode.values())
         .map(MarketCode::toMetadata)
-        .sorted((left, right) -> left.name().compareToIgnoreCase(right.name()))
+        .sorted((left, right) -> left.displayName().compareToIgnoreCase(right.displayName()))
         .collect(Collectors.toList());
   }
 
@@ -54,7 +54,7 @@ public class MarketDataService {
     Instant now = clock.instant();
     return Arrays.stream(MarketCode.values())
         .map(code -> generator.generateOverview(code, now, OVERVIEW_HISTORY_RANGE, OVERVIEW_HISTORY_INTERVAL))
-        .sorted((left, right) -> left.name().compareToIgnoreCase(right.name()))
+        .sorted((left, right) -> left.displayName().compareToIgnoreCase(right.displayName()))
         .collect(Collectors.toList());
   }
 
