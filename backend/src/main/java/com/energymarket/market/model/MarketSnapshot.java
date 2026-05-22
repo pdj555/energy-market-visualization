@@ -3,9 +3,7 @@ package com.energymarket.market.model;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Composite response bundling the key datasets required by the dashboard.
- */
+/** Composite response bundling the key datasets required by the dashboard. */
 public record MarketSnapshot(
     MarketOverview overview,
     List<PricePoint> priceSeries,

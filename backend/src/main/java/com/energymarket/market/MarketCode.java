@@ -6,9 +6,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
-/**
- * Enumeration of the synthetic markets supported by the demo service.
- */
+/** Enumeration of the synthetic markets supported by the demo service. */
 public enum MarketCode {
   CAISO(
       "CAISO",
@@ -103,7 +101,9 @@ public enum MarketCode {
       return Optional.empty();
     }
     final String normalized = value.trim().toUpperCase(Locale.US);
-    return Arrays.stream(values()).filter(code -> Objects.equals(code.code, normalized)).findFirst();
+    return Arrays.stream(values())
+        .filter(code -> Objects.equals(code.code, normalized))
+        .findFirst();
   }
 
   /**
@@ -120,9 +120,7 @@ public enum MarketCode {
     return code;
   }
 
-  /**
-   * Domain-specific tuning parameters that drive the synthetic dataset for each market.
-   */
+  /** Domain-specific tuning parameters that drive the synthetic dataset for each market. */
   public record MarketParameters(
       double basePrice,
       double dailySwing,

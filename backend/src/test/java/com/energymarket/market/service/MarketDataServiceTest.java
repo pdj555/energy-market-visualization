@@ -71,7 +71,8 @@ class MarketDataServiceTest {
 
     assertThat(catalog).isNotEmpty();
     assertThat(catalog)
-        .isSortedAccordingTo(Comparator.comparing(MarketMetadata::name, String.CASE_INSENSITIVE_ORDER));
+        .isSortedAccordingTo(
+            Comparator.comparing(MarketMetadata::name, String.CASE_INSENSITIVE_ORDER));
     assertThat(catalog).extracting(MarketMetadata::code).contains("NEISO", "ERCOT");
   }
 }

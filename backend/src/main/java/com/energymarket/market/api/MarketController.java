@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-/**
- * Reactive REST controller exposing the synthetic energy market intelligence API.
- */
+/** Reactive REST controller exposing the synthetic energy market intelligence API. */
 @RestController
 @RequestMapping("/api/markets")
 @Validated
@@ -41,9 +39,7 @@ public class MarketController {
     return Mono.fromSupplier(marketDataService::getMarketOverview);
   }
 
-  /**
-   * Returns the detailed snapshot for a specific market.
-   */
+  /** Returns the detailed snapshot for a specific market. */
   @GetMapping("/{marketCode}/snapshot")
   public Mono<MarketSnapshot> getMarketSnapshot(
       @PathVariable String marketCode,

@@ -3,9 +3,7 @@ package com.energymarket.market.model;
 import java.time.Instant;
 import java.util.Objects;
 
-/**
- * High-level snapshot of market health used by dashboards and list views.
- */
+/** High-level snapshot of market health used by dashboards and list views. */
 public record MarketOverview(
     String code,
     String name,
