@@ -1,95 +1,88 @@
 # Energy Market Visualization
 
-An applied-intelligence sandbox that generates premium electricity market telemetry for product and
-analytics experiments. The project ships a synthetic Spring Boot WebFlux API and a modern React
-analytics console designed for latency-sensitive price discovery and risk monitoring.
+Synthetic wholesale electricity telemetry for product and analytics experiments. A reactive Spring Boot API generates deterministic market data; a React dashboard renders price, demand, carbon, and forecast views without live ISO feeds.
 
-## Capabilities
+## System architecture
 
-- **High-signal synthetic data** – deterministic scenario engine produces price, load, carbon
-  intensity and renewable penetration curves for five major North American ISOs.
-- **Insightful analytics** – volatility, carbon trend and anomaly detection metrics summarise the
-  current operating window.
-- **Forward-looking forecasts** – price envelope projections with confidence bands to gauge short
-  term risk.
-- **Interactive dashboard** – React 19 + React Query interface with Tailwind styling, real-time
-  refresh indicators and multi-market comparison cards.
+```mermaid
+flowchart TB
+  subgraph Backend["Spring Boot / Java 22"]
+    G[MarketDataGenerator]
+    S[MarketDataService]
+    API["/api/markets/*"]
+    G --> S --> API
+  end
 
-## Backend (Spring Boot 3 / Java 22)
+  subgraph Frontend["React 19 / Vite"]
+    Q[TanStack Query]
+    CH[Chart.js views]
+    UI[Dashboard]
+    Q --> CH --> UI
+  end
 
-The backend lives in [`backend/`](backend/) and exposes reactive JSON endpoints under
-`/api/markets`:
+  API --> Q
+```
+
+## Markets covered
+
+Deterministic synthetic series for five North American ISOs: **CAISO**, **ERCOT**, **MISO**, **NEISO**, **PJM**.
+
+Each market exposes price, load, carbon intensity, renewable share, volatility metrics, and short-horizon forecast envelopes.
+
+## API
 
 | Endpoint | Description |
 | --- | --- |
-| `GET /api/markets/catalog` | Market catalogue with region, timezone and descriptive context. |
-| `GET /api/markets/overview` | Portfolio view of current price, demand and sustainability metrics. |
-| `GET /api/markets/{code}/snapshot` | Composite response with historical series, forecast and insights. |
+| `GET /api/markets/catalog` | Market metadata and regions |
+| `GET /api/markets/overview` | Cross-market snapshot |
+| `GET /api/markets/{code}/snapshot` | History, forecast, and insights for one market |
 
-Synthetic data is produced by `MarketDataGenerator`, which combines seasonal shapes, deterministic
-noise and anomaly detection to deliver realistic yet reproducible datasets. Tests exercise service
-logic and the REST controller using `WebTestClient`.
+Query parameters control history window, resolution, and forecast horizon on snapshot requests.
 
-### Running the backend
+## Quick start
+
+**Backend**
 
 ```bash
 cd backend
 mvn spring-boot:run
 ```
 
-### Backend quality gates
-
-```bash
-cd backend
-mvn spotless:apply   # optional auto-format
-mvn test             # unit tests + coverage rules
-```
-
-## Frontend (React 19 + Vite + Tailwind)
-
-The frontend dashboard resides in [`frontend/`](frontend/). It uses TanStack Query to orchestrate
-API calls, Chart.js for price visualisation and Tailwind CSS for theming.
-
-### Available scripts
+**Frontend**
 
 ```bash
 cd frontend
 npm install
-npm run dev          # start Vite dev server on http://localhost:3000
-npm run build        # production build
-npm run test         # Vitest unit tests (watch mode)
-npm run test:ci      # Vitest in coverage mode
-npm run lint         # ESLint
-npm run type-check   # TypeScript compiler checks
+npm run dev    # http://localhost:3000
 ```
 
-### Frontend environment
+For split hosting, copy `frontend/.env.example` to `.env.local` and set `VITE_API_BASE_URL` to the API origin.
 
-Copy [`frontend/.env.example`](frontend/.env.example) when the dashboard needs to talk to an API
-origin other than the current host. Leave `VITE_API_BASE_URL` blank for same-origin deployments and
-local Vite proxying; set it to the API origin for split frontend/backend hosting.
+## Quality gates
 
 ```bash
-cd frontend
-cp .env.example .env.local
-# VITE_API_BASE_URL=https://api.energy-intelligence.example.com
+cd backend && mvn spotless:apply test
+cd frontend && npm run type-check && npm run lint && npm run test:ci && npm run build
 ```
 
-### Key UI features
+Combined pre-commit script:
 
-- Market picker with history/forecast controls and refresh action.
-- Overview grid displaying price movements, demand and sustainability metrics across markets.
-- Dual-axis price & demand chart backed by Chart.js (mocked in tests).
-- Forecast table summarising confidence bounds for upcoming hours.
-- Insights panel showing volatility, demand statistics and operational alerts.
+```bash
+scripts/pre-commit-quality-check.sh
+```
 
-## Contributing
+## Dashboard features
 
-1. Ensure Node.js 20+, npm 10+ and Java 22+ are installed.
-2. Run `scripts/pre-commit-quality-check.sh` to execute the combined quality gates.
-3. Submit focused changes with accompanying tests.
+- Multi-market overview with price movement and sustainability metrics
+- Configurable history and forecast windows per market
+- Dual-axis price and demand chart
+- Forecast table with confidence bounds
+- Insights panel for volatility, demand statistics, and anomaly flags
 
----
+## Prerequisites
 
-This repository is optimised for demonstrating intelligence-driven energy analytics without
-requiring live market data access.
+Node.js 20+, npm 10+, Java 22+, Maven 3.9+.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
