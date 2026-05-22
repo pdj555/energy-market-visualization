@@ -7,7 +7,6 @@ on:
       - '**.md'
       - 'docs/**'
   push:
-    branches: [ main ]
     tags: [ 'v*' ]
   workflow_dispatch:
 
