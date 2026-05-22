@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 @WebFluxTest(controllers = MarketController.class)
 @Import({
@@ -100,11 +99,6 @@ class MarketControllerTest {
     @Bean
     Clock testClock() {
       return Clock.fixed(Instant.parse("2025-01-15T12:00:00Z"), ZoneOffset.UTC);
-    }
-
-    @Bean
-    LocalValidatorFactoryBean validator() {
-      return new LocalValidatorFactoryBean();
     }
   }
 }

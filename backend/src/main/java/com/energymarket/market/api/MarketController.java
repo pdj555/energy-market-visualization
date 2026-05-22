@@ -4,10 +4,7 @@ import com.energymarket.market.model.MarketMetadata;
 import com.energymarket.market.model.MarketOverview;
 import com.energymarket.market.model.MarketSnapshot;
 import com.energymarket.market.service.MarketDataService;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +15,6 @@ import reactor.core.publisher.Mono;
 /** Reactive REST controller exposing the synthetic energy market intelligence API. */
 @RestController
 @RequestMapping("/api/markets")
-@Validated
 public class MarketController {
 
   private final MarketDataService marketDataService;
@@ -42,11 +38,11 @@ public class MarketController {
   /** Returns the detailed snapshot for a specific market. */
   @GetMapping("/{marketCode}/snapshot")
   public Mono<MarketSnapshot> getMarketSnapshot(
-      @PathVariable String marketCode,
-      @RequestParam(defaultValue = "24") @Min(1) @Max(168) int historyHours,
-      @RequestParam(defaultValue = "15") @Min(5) @Max(180) int historyResolutionMinutes,
-      @RequestParam(defaultValue = "12") @Min(1) @Max(72) int forecastHours,
-      @RequestParam(defaultValue = "60") @Min(15) @Max(240) int forecastResolutionMinutes) {
+      @PathVariable("marketCode") String marketCode,
+      @RequestParam(defaultValue = "24") int historyHours,
+      @RequestParam(defaultValue = "15") int historyResolutionMinutes,
+      @RequestParam(defaultValue = "12") int forecastHours,
+      @RequestParam(defaultValue = "60") int forecastResolutionMinutes) {
     return Mono.fromSupplier(
         () ->
             marketDataService.getMarketSnapshot(
