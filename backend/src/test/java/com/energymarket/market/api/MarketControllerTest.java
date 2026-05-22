@@ -7,33 +7,32 @@ import com.energymarket.market.service.MarketDataService;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
+@WebFluxTest(controllers = MarketController.class)
+@Import({
+  MarketDataService.class,
+  ApiExceptionHandler.class,
+  MarketControllerTest.TestClockConfig.class
+})
+@TestPropertySource(properties = "spring.main.web-application-type=reactive")
 class MarketControllerTest {
 
-  private WebTestClient webTestClient;
-
-  @BeforeEach
-  void setUp() {
-    Clock clock = Clock.fixed(Instant.parse("2025-01-15T12:00:00Z"), ZoneOffset.UTC);
-    MarketDataService service = new MarketDataService(clock);
-    MarketController controller = new MarketController(service);
-    this.webTestClient =
-        WebTestClient.bindToController(controller)
-            .controllerAdvice(new ApiExceptionHandler())
-            .configureClient()
-            .baseUrl("/api/markets")
-            .build();
-  }
+  @Autowired private WebTestClient webTestClient;
 
   @Test
   void shouldReturnMarketCatalog() {
     webTestClient
         .get()
-        .uri("/catalog")
+        .uri("/api/markets/catalog")
         .exchange()
         .expectStatus()
         .isOk()
@@ -54,7 +53,7 @@ class MarketControllerTest {
         .uri(
             uriBuilder ->
                 uriBuilder
-                    .path("/NEISO/snapshot")
+                    .path("/api/markets/NEISO/snapshot")
                     .queryParam("historyHours", 24)
                     .queryParam("historyResolutionMinutes", 15)
                     .queryParam("forecastHours", 12)
@@ -80,12 +79,32 @@ class MarketControllerTest {
   void shouldReturnNotFoundForUnknownMarket() {
     webTestClient
         .get()
-        .uri("/UNKNOWN/snapshot")
+        .uri(
+            uriBuilder ->
+                uriBuilder
+                    .path("/api/markets/UNKNOWN/snapshot")
+                    .queryParam("historyHours", 24)
+                    .queryParam("historyResolutionMinutes", 15)
+                    .queryParam("forecastHours", 12)
+                    .queryParam("forecastResolutionMinutes", 60)
+                    .build())
         .exchange()
         .expectStatus()
         .isNotFound()
         .expectBody()
         .jsonPath("$.title")
         .isEqualTo("Market not found");
+  }
+
+  static class TestClockConfig {
+    @Bean
+    Clock testClock() {
+      return Clock.fixed(Instant.parse("2025-01-15T12:00:00Z"), ZoneOffset.UTC);
+    }
+
+    @Bean
+    LocalValidatorFactoryBean validator() {
+      return new LocalValidatorFactoryBean();
+    }
   }
 }

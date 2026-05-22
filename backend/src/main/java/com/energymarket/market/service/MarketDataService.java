@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /** Application service orchestrating synthetic data generation for API consumers. */
@@ -26,6 +27,7 @@ public class MarketDataService {
   private final Clock clock;
   private final MarketDataGenerator generator;
 
+  @Autowired
   public MarketDataService(Clock clock) {
     this(clock, new MarketDataGenerator());
   }
