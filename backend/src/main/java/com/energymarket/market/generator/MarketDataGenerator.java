@@ -190,7 +190,7 @@ public class MarketDataGenerator {
 
     return new MarketOverview(
         market.code(),
-        market.name(),
+        market.displayName(),
         market.region(),
         market.timezone(),
         market.description(),

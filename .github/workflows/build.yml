@@ -1,13 +1,7 @@
 name: Build, Test & Publish
 
 on:
-  pull_request:
-    branches: [ main, develop ]
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
   push:
-    branches: [ main ]
     tags: [ 'v*' ]
   workflow_dispatch:
 
