@@ -1,95 +1,45 @@
 # Energy Market Visualization
 
-An applied-intelligence sandbox that generates premium electricity market telemetry for product and
-analytics experiments. The project ships a synthetic Spring Boot WebFlux API and a modern React
-analytics console designed for latency-sensitive price discovery and risk monitoring.
+Synthetic wholesale power telemetry. Reactive API. Analytics dashboard. No live ISO feeds required.
 
-## Capabilities
-
-- **High-signal synthetic data** – deterministic scenario engine produces price, load, carbon
-  intensity and renewable penetration curves for five major North American ISOs.
-- **Insightful analytics** – volatility, carbon trend and anomaly detection metrics summarise the
-  current operating window.
-- **Forward-looking forecasts** – price envelope projections with confidence bands to gauge short
-  term risk.
-- **Interactive dashboard** – React 19 + React Query interface with Tailwind styling, real-time
-  refresh indicators and multi-market comparison cards.
-
-## Backend (Spring Boot 3 / Java 22)
-
-The backend lives in [`backend/`](backend/) and exposes reactive JSON endpoints under
-`/api/markets`:
-
-| Endpoint | Description |
-| --- | --- |
-| `GET /api/markets/catalog` | Market catalogue with region, timezone and descriptive context. |
-| `GET /api/markets/overview` | Portfolio view of current price, demand and sustainability metrics. |
-| `GET /api/markets/{code}/snapshot` | Composite response with historical series, forecast and insights. |
-
-Synthetic data is produced by `MarketDataGenerator`, which combines seasonal shapes, deterministic
-noise and anomaly detection to deliver realistic yet reproducible datasets. Tests exercise service
-logic and the REST controller using `WebTestClient`.
-
-### Running the backend
-
-```bash
-cd backend
-mvn spring-boot:run
+```mermaid
+flowchart LR
+  G[Generator] --> API[Spring API]
+  API --> UI[React dashboard]
 ```
 
-### Backend quality gates
+## Get started
 
 ```bash
-cd backend
-mvn spotless:apply   # optional auto-format
-mvn test             # unit tests + coverage rules
+cd backend && mvn spring-boot:run
+cd frontend && npm install && npm run dev   # http://localhost:3000
 ```
 
-## Frontend (React 19 + Vite + Tailwind)
+## Overview
 
-The frontend dashboard resides in [`frontend/`](frontend/). It uses TanStack Query to orchestrate
-API calls, Chart.js for price visualisation and Tailwind CSS for theming.
+Five deterministic markets: **CAISO**, **ERCOT**, **MISO**, **NEISO**, **PJM**.
 
-### Available scripts
+Each exposes price, load, carbon intensity, renewable share, volatility, and short-horizon forecast envelopes — reproducible on every run.
+
+| Endpoint | Returns |
+| :-- | :-- |
+| `GET /api/markets/catalog` | Market metadata |
+| `GET /api/markets/overview` | Cross-market snapshot |
+| `GET /api/markets/{code}/snapshot` | History, forecast, insights |
+
+Snapshot query params control history window, resolution, and forecast horizon.
+
+Split hosting: set `VITE_API_BASE_URL` in `frontend/.env.local` (see `.env.example`).
+
+## Reference
+
+**Verify.**
 
 ```bash
-cd frontend
-npm install
-npm run dev          # start Vite dev server on http://localhost:3000
-npm run build        # production build
-npm run test         # Vitest unit tests (watch mode)
-npm run test:ci      # Vitest in coverage mode
-npm run lint         # ESLint
-npm run type-check   # TypeScript compiler checks
+cd backend && mvn test
+cd frontend && npm run type-check && npm run test:ci && npm run build
 ```
 
-### Frontend environment
+Requires Java 22+, Maven 3.9+, Node 20+.
 
-Copy [`frontend/.env.example`](frontend/.env.example) when the dashboard needs to talk to an API
-origin other than the current host. Leave `VITE_API_BASE_URL` blank for same-origin deployments and
-local Vite proxying; set it to the API origin for split frontend/backend hosting.
-
-```bash
-cd frontend
-cp .env.example .env.local
-# VITE_API_BASE_URL=https://api.energy-intelligence.example.com
-```
-
-### Key UI features
-
-- Market picker with history/forecast controls and refresh action.
-- Overview grid displaying price movements, demand and sustainability metrics across markets.
-- Dual-axis price & demand chart backed by Chart.js (mocked in tests).
-- Forecast table summarising confidence bounds for upcoming hours.
-- Insights panel showing volatility, demand statistics and operational alerts.
-
-## Contributing
-
-1. Ensure Node.js 20+, npm 10+ and Java 22+ are installed.
-2. Run `scripts/pre-commit-quality-check.sh` to execute the combined quality gates.
-3. Submit focused changes with accompanying tests.
-
----
-
-This repository is optimised for demonstrating intelligence-driven energy analytics without
-requiring live market data access.
+MIT · [LICENSE](LICENSE)
