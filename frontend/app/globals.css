@@ -131,7 +131,9 @@
   }
 
   .nous-display {
-    @apply text-[clamp(2.5rem,12vw,7rem)] leading-[0.72] tracking-[-0.04em];
+    @apply block overflow-visible pb-1 text-[clamp(2.5rem,12vw,7rem)] leading-[1.05] tracking-[-0.04em];
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
     background: repeating-linear-gradient(
       to bottom,
       var(--color-primary) 0,

@@ -34,7 +34,7 @@ export function SiteNav({ isLive }: SiteNavProps) {
           <StatusPill label={isLive ? 'Live' : 'Syncing'} active={isLive} />
         </div>
       </div>
-      <div className="nous-frame px-5 py-6 sm:px-8 sm:py-8">
+      <div className="nous-frame overflow-visible px-5 py-6 sm:px-8 sm:py-8">
         <p className="label-caps mb-3 sm:mb-4">Wholesale telemetry</p>
         <h1 className="nous-display">Energy Intelligence</h1>
       </div>
