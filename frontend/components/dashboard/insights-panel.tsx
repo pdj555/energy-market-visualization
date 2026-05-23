@@ -39,7 +39,7 @@ export function InsightsPanel({ insights, marketName }: InsightsPanelProps) {
           ))}
         </div>
       </div>
-      <aside className="border-l-2 border-primary pl-5 lg:min-h-full">
+      <aside className="border-l border-primary/30 pl-5 lg:min-h-full">
         <p className="label-caps">Alerts · {marketName}</p>
         {insights.alerts.length > 0 ? (
           <ul className="mt-4 space-y-2.5">

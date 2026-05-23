@@ -14,6 +14,7 @@ const config: Config = {
       },
       colors: {
         backdrop: 'var(--color-backdrop)',
+        surface: 'var(--color-surface)',
         plain: 'var(--color-plain)',
         primary: 'var(--color-primary)',
         grid: 'var(--color-grid)',

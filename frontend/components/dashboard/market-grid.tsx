@@ -26,7 +26,7 @@ export function MarketGrid({ overviews, selectedMarket, onSelectMarket }: Market
           className={cn(
             'nous-frame p-4 text-left transition duration-200 animate-fade-up sm:p-5',
             'hover:nous-tint-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
-            overview.code === selectedMarket && 'nous-tint-8 ring-2 ring-inset ring-primary'
+            overview.code === selectedMarket && 'nous-tint-8 ring-1 ring-inset ring-primary/40'
           )}
           style={{ animationDelay: `${index * 35}ms` }}
         >

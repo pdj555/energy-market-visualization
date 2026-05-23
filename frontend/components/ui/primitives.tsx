@@ -16,11 +16,11 @@ interface StatusPillProps {
 
 export function StatusPill({ label, active = false }: StatusPillProps) {
   return (
-    <span className="label-caps inline-flex items-center gap-2 rounded-sm border border-primary bg-backdrop px-2 py-0.5">
+    <span className="label-caps inline-flex items-center gap-2 rounded-sm border border-primary/30 bg-surface px-2 py-0.5">
       <span
         className={cn(
           'h-1.5 w-1.5 rounded-full',
-          active ? 'bg-primary animate-pulse' : 'border border-primary bg-backdrop'
+          active ? 'bg-primary animate-pulse' : 'border border-primary/40 bg-backdrop'
         )}
         aria-hidden
       />
@@ -79,10 +79,10 @@ export function Button({ variant = 'primary', className, children, ...props }: B
     <button
       type="button"
       className={cn(
-        'rounded-sm border-2 border-primary px-4 py-2 text-xs uppercase tracking-[0.1em] transition sm:text-sm',
+        'rounded-sm border border-primary px-4 py-2 text-xs uppercase tracking-[0.1em] transition sm:text-sm',
         variant === 'primary'
           ? 'bg-primary text-backdrop hover:opacity-90 active:scale-[0.99]'
-          : 'bg-backdrop text-primary hover:nous-tint-4',
+          : 'bg-surface text-primary hover:nous-tint-4',
         className
       )}
       {...props}

@@ -11,7 +11,7 @@ const mono = Ubuntu_Mono({
   display: 'swap',
 });
 
-const themeInitScript = `(function(){try{var s=localStorage.getItem('theme');var d=s==='dark'||(!s&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);}catch(e){}})();`;
+const themeInitScript = `(function(){try{var s=localStorage.getItem('theme');var d=s!=='light';document.documentElement.classList.toggle('dark',d);}catch(e){document.documentElement.classList.add('dark');}})();`;
 
 export const metadata: Metadata = {
   title: 'Energy Intelligence',
@@ -25,15 +25,15 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: dark)', color: '#05080c' },
-    { color: '#ffffff' },
+    { media: '(prefers-color-scheme: light)', color: '#f8faff' },
+    { color: '#030508' },
   ],
-  colorScheme: 'light dark',
+  colorScheme: 'dark light',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={mono.variable} suppressHydrationWarning>
+    <html lang="en" className={`${mono.variable} dark`} suppressHydrationWarning>
       <body className="min-h-screen">
         <Script id="theme-init" strategy="beforeInteractive">
           {themeInitScript}
