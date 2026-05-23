@@ -1,0 +1,188 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --color-backdrop: #ffffff;
+    --color-plain: #1769ff;
+    --color-primary: #1769ff;
+    --color-grid: #74a7ff;
+    --color-negative: #dc2626;
+    --color-tooltip-bg: #1769ff;
+    --color-tooltip-text: #ffffff;
+    --color-muted: rgb(23 105 255 / 0.62);
+  }
+
+  :root.dark {
+    color-scheme: dark;
+    --color-backdrop: #05080c;
+    --color-plain: #ffffff;
+    --color-primary: #a9daf7;
+    --color-grid: #3c3c3c;
+    --color-negative: #f87171;
+    --color-tooltip-bg: #05080c;
+    --color-tooltip-text: #a9daf7;
+    --color-muted: rgb(169 218 247 / 0.62);
+  }
+
+  html {
+    @apply scroll-smooth antialiased;
+  }
+
+  body {
+    @apply min-h-screen bg-backdrop font-mono text-sm font-bold text-primary sm:text-base;
+    background-image:
+      linear-gradient(var(--color-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: -1px -1px;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% 0%, transparent 40%, var(--color-backdrop) 100%);
+    opacity: 0.92;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-primary) 20%, transparent);
+    color: var(--color-primary);
+  }
+
+  select option {
+    background: var(--color-backdrop);
+    color: var(--color-primary);
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .label-caps {
+    @apply text-[11px] uppercase tracking-[0.12em] text-primary sm:text-xs;
+  }
+
+  .metric-value {
+    @apply text-xl tabular-nums leading-none text-primary sm:text-2xl;
+  }
+
+  .select-field {
+    @apply w-full rounded-sm border-2 border-primary bg-backdrop px-2 py-1.5 text-primary transition-colors focus:outline-none;
+  }
+
+  .nous-frame {
+    @apply rounded-md border-2 border-primary;
+  }
+
+  .nous-divider {
+    border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
+  }
+
+  .nous-divider-strong {
+    @apply border-b-2 border-primary;
+  }
+
+  .spec-row {
+    @apply flex items-baseline justify-between gap-4 py-2 last:border-0;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
+  }
+
+  .nous-muted {
+    color: var(--color-muted);
+  }
+
+  .nous-legend {
+    @apply bg-backdrop px-2 text-[11px] uppercase tracking-[0.14em] sm:text-xs;
+  }
+
+  .nous-display {
+    @apply text-[clamp(2.5rem,12vw,7rem)] leading-[0.72] tracking-[-0.04em];
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--color-primary) 0,
+      var(--color-primary) 3px,
+      transparent 3px,
+      transparent 6px
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  .nous-link {
+    @apply underline-offset-4 transition hover:underline;
+  }
+
+  .nous-stat-grid {
+    @apply grid divide-x divide-y divide-primary overflow-hidden rounded-sm border-2 border-primary bg-backdrop sm:grid-cols-2 lg:grid-cols-4;
+  }
+
+  .nous-stat-cell {
+    @apply bg-backdrop px-3 py-3;
+  }
+
+  .nous-metric-grid {
+    @apply grid divide-x divide-y divide-primary overflow-hidden rounded-sm border-2 border-primary bg-backdrop sm:grid-cols-2 xl:grid-cols-3;
+  }
+
+  .nous-metric-cell {
+    @apply bg-backdrop px-3 py-3;
+  }
+}
+
+@layer utilities {
+  .text-negative {
+    color: var(--color-negative);
+  }
+
+  .nous-tint-3 {
+    background: color-mix(in srgb, var(--color-primary) 3%, transparent);
+  }
+
+  .nous-tint-4 {
+    background: color-mix(in srgb, var(--color-primary) 4%, transparent);
+  }
+
+  .nous-tint-8 {
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  }
+
+  .animate-fade-up {
+    animation: fadeUp 0.55s ease-out both;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.35s ease-out both;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

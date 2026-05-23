@@ -86,10 +86,10 @@ jobs:
           prompt: |
             You are the on-call engineer for the Energy Market Visualization repo.
             Read CLAUDE.md first. Ship concrete fixes — patches, tests, CI green — not essays.
-            Backend: Java 22 / Maven / Spotless. Frontend: Node 20 / npm.
+            Backend: Java 22 / Maven / Spotless. Frontend: Next.js 16 / Node 26 / pnpm.
             Every change must keep `mvn test` and frontend verify passing.
             Never log, echo, or commit secrets.
           claude_args: |
             --model claude-sonnet-4-6
             --max-turns 15
-            --allowedTools "Edit,Read,Write,Grep,Glob,Bash(mvn:*),Bash(npm:*),Bash(npx:*),Bash(cd backend:*),Bash(cd frontend:*),mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh issue view:*),Bash(gh issue comment:*)"
+            --allowedTools "Edit,Read,Write,Grep,Glob,Bash(mvn:*),Bash(pnpm:*),Bash(npx:*),Bash(cd backend:*),Bash(cd frontend:*),mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh issue view:*),Bash(gh issue comment:*)"
