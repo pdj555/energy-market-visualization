@@ -42,6 +42,8 @@ jobs:
 
       - name: Frontend verify
         working-directory: frontend
+        env:
+          API_PROXY_TARGET: https://energy-market-viz-api.fly.dev
         run: |
           pnpm install --frozen-lockfile
           pnpm run type-check
