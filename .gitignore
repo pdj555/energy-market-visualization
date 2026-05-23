@@ -142,6 +142,9 @@ jspm_packages/
 # Next.js build output
 .next
 
+# Vercel local link (project id is in dashboard)
+frontend/.vercel/
+
 # Nuxt.js build / generate output
 .nuxt
 dist
