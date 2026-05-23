@@ -15,9 +15,9 @@ interface SiteNavProps {
 
 export function SiteNav({ isLive }: SiteNavProps) {
   return (
-    <header className="relative pb-1 pt-2">
-      <div className="absolute left-0 top-3 z-10 w-full -translate-y-1/2 px-1 sm:px-4">
-        <div className="flex items-center justify-between gap-4 bg-backdrop">
+    <header className="relative pb-2 pt-3">
+      <div className="absolute left-0 top-4 z-10 w-full -translate-y-1/2 px-2 sm:px-4">
+        <div className="flex items-center justify-between gap-3 bg-backdrop sm:gap-4">
           <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
             <span className="nous-muted hidden truncate text-[11px] sm:inline sm:text-xs">
               five ISO regions · synthetic telemetry
@@ -34,9 +34,9 @@ export function SiteNav({ isLive }: SiteNavProps) {
           <StatusPill label={isLive ? 'Live' : 'Syncing'} active={isLive} />
         </div>
       </div>
-      <div className="nous-frame overflow-visible px-5 py-6 sm:px-8 sm:py-8">
-        <p className="label-caps mb-3 sm:mb-4">Wholesale telemetry</p>
-        <h1 className="nous-display">Energy Intelligence</h1>
+      <div className="nous-frame overflow-visible px-5 pb-8 pt-7 sm:px-8 sm:pb-10 sm:pt-8">
+        <p className="label-caps mb-4 sm:mb-5">Wholesale telemetry</p>
+        <h1 className="nous-display max-w-full">Energy Intelligence</h1>
       </div>
     </header>
   );

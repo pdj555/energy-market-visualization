@@ -131,7 +131,7 @@
   }
 
   .nous-display {
-    @apply block overflow-visible pb-1 text-[clamp(2.5rem,12vw,7rem)] leading-[1.05] tracking-[-0.04em];
+    @apply block w-full overflow-visible py-1 text-[clamp(2.25rem,10vw,6.5rem)] leading-[1.15] tracking-[-0.04em];
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
     background: repeating-linear-gradient(
@@ -139,7 +139,7 @@
       var(--color-primary) 0,
       var(--color-primary) 3px,
       transparent 3px,
-      transparent 6px
+      transparent 7px
     );
     -webkit-background-clip: text;
     background-clip: text;
