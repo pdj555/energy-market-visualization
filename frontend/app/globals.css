@@ -1,0 +1,209 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --color-backdrop: #f8faff;
+    --color-surface: #ffffff;
+    --color-plain: #1769ff;
+    --color-primary: #1769ff;
+    --color-grid: #94b4f5;
+    --color-negative: #dc2626;
+    --color-tooltip-bg: #1769ff;
+    --color-tooltip-text: #ffffff;
+    --color-muted: rgb(23 105 255 / 0.55);
+    --color-border-soft: rgb(23 105 255 / 0.14);
+    --color-border: rgb(23 105 255 / 0.32);
+  }
+
+  :root.dark {
+    color-scheme: dark;
+    --color-backdrop: #030508;
+    --color-surface: #070b10;
+    --color-plain: #e8f4fc;
+    --color-primary: #b8dcfa;
+    --color-grid: #3d4f5f;
+    --color-negative: #f87171;
+    --color-tooltip-bg: #070b10;
+    --color-tooltip-text: #b8dcfa;
+    --color-muted: rgb(184 220 250 / 0.42);
+    --color-border-soft: rgb(184 220 250 / 0.1);
+    --color-border: rgb(184 220 250 / 0.24);
+  }
+
+  html {
+    @apply scroll-smooth antialiased;
+  }
+
+  body {
+    @apply min-h-screen font-mono text-sm font-bold sm:text-base;
+    background-color: var(--color-backdrop);
+    color: var(--color-primary);
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-primary) 20%, transparent);
+    color: var(--color-primary);
+  }
+
+  select option {
+    background: var(--color-surface);
+    color: var(--color-primary);
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .label-caps {
+    @apply text-[11px] uppercase tracking-[0.12em] sm:text-xs;
+    color: var(--color-primary);
+  }
+
+  .metric-value {
+    @apply text-2xl tabular-nums leading-none tracking-tight sm:text-3xl;
+    color: var(--color-primary);
+  }
+
+  .metric-value-sm {
+    @apply text-lg tabular-nums leading-none tracking-tight sm:text-xl;
+    color: var(--color-primary);
+  }
+
+  .select-field {
+    @apply w-full rounded-sm border px-2.5 py-2 transition-colors focus:outline-none;
+    border-color: var(--color-border);
+    background-color: var(--color-surface);
+    color: var(--color-primary);
+  }
+
+  .select-field:hover {
+    background: color-mix(in srgb, var(--color-primary) 4%, var(--color-surface));
+  }
+
+  .nous-frame {
+    @apply rounded-sm border;
+    border-color: var(--color-border);
+    background-color: var(--color-surface);
+  }
+
+  .nous-divider {
+    border-bottom: 1px solid var(--color-border-soft);
+  }
+
+  .nous-divider-strong {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .spec-row {
+    @apply flex items-baseline justify-between gap-4 py-2 last:border-0;
+    border-bottom: 1px solid var(--color-border-soft);
+  }
+
+  .nous-muted {
+    color: var(--color-muted);
+  }
+
+  .nous-legend {
+    @apply px-2.5 text-[11px] uppercase tracking-[0.16em] sm:text-xs;
+    background-color: var(--color-backdrop);
+    color: var(--color-primary);
+  }
+
+  .nous-display {
+    @apply block w-full text-[clamp(2.25rem,10vw,6.5rem)] font-bold leading-[1.05] tracking-[-0.04em];
+    color: var(--color-primary);
+  }
+
+  .nous-link {
+    @apply rounded-sm px-1.5 py-0.5 underline-offset-4 transition hover:underline hover:nous-tint-4;
+  }
+
+  .nous-stat-grid {
+    @apply grid divide-x divide-y overflow-hidden rounded-sm sm:grid-cols-2 lg:grid-cols-4;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+  }
+
+  .nous-stat-grid > * {
+    border-color: var(--color-border-soft);
+  }
+
+  .nous-stat-cell {
+    @apply px-4 py-4;
+    background-color: var(--color-surface);
+  }
+
+  .nous-metric-grid {
+    @apply grid divide-x divide-y overflow-hidden rounded-sm sm:grid-cols-2 xl:grid-cols-3;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface);
+  }
+
+  .nous-metric-grid > * {
+    border-color: var(--color-border-soft);
+  }
+
+  .nous-metric-cell {
+    @apply px-4 py-3.5;
+    background-color: var(--color-surface);
+  }
+
+  .nous-skeleton {
+    @apply animate-pulse rounded-sm;
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  }
+}
+
+@layer utilities {
+  .text-negative {
+    color: var(--color-negative);
+  }
+
+  .nous-tint-3 {
+    background: color-mix(in srgb, var(--color-primary) 3%, transparent);
+  }
+
+  .nous-tint-4 {
+    background: color-mix(in srgb, var(--color-primary) 4%, transparent);
+  }
+
+  .nous-tint-8 {
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  }
+
+  .animate-fade-up {
+    animation: fadeUp 0.55s ease-out both;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.35s ease-out both;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

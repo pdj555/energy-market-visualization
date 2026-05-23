@@ -1,45 +1,44 @@
-# Energy Market Visualization
+# Energy Market Intelligence
 
-Synthetic wholesale power telemetry. Reactive API. Analytics dashboard. No live ISO feeds required.
+Agent-native wholesale power telemetry. Spring Boot API. Next.js 16 dashboard. Five deterministic ISO markets.
 
 ```mermaid
 flowchart LR
-  G[Generator] --> API[Spring API]
-  API --> UI[React dashboard]
+  G[Generator] --> API[Spring Boot API]
+  API --> UI[Next.js Dashboard]
+  CI[Claude Workflows] --> API
+  CI --> UI
 ```
 
-## Get started
+## Run locally
+
+Requires **Node 26**, **pnpm 11**, Java 22+, Maven 3.9+.
 
 ```bash
+# Terminal 1 — API
 cd backend && mvn spring-boot:run
-cd frontend && npm install && npm run dev   # http://localhost:3000
+
+# Terminal 2 — Dashboard
+cd frontend && corepack enable && pnpm install && pnpm dev
 ```
 
-## Overview
+Open [http://localhost:3000](http://localhost:3000).
 
-Five deterministic markets: **CAISO**, **ERCOT**, **MISO**, **NEISO**, **PJM**.
+## Stack
 
-Each exposes price, load, carbon intensity, renewable share, volatility, and short-horizon forecast envelopes — reproducible on every run.
-
-| Endpoint | Returns |
+| Layer | Technology |
 | :-- | :-- |
-| `GET /api/markets/catalog` | Market metadata |
-| `GET /api/markets/overview` | Cross-market snapshot |
-| `GET /api/markets/{code}/snapshot` | History, forecast, insights |
+| API | Java 22, Spring WebFlux, deterministic generator |
+| Dashboard | Next.js 16, React 19, TanStack Query, Chart.js |
+| Toolchain | Node 26, pnpm 11 |
+| Agent platform | Claude Code workflows, skills, CI evals |
+| Markets | CAISO, ERCOT, MISO, NEISO, PJM |
 
-Snapshot query params control history window, resolution, and forecast horizon.
-
-Split hosting: set `VITE_API_BASE_URL` in `frontend/.env.local` (see `.env.example`).
-
-## Reference
-
-**Verify.**
+## Verify
 
 ```bash
 cd backend && mvn test
-cd frontend && npm run type-check && npm run test:ci && npm run build
+cd frontend && pnpm run type-check && pnpm run test:ci && pnpm run build
 ```
-
-Requires Java 22+, Maven 3.9+, Node 20+.
 
 MIT · [LICENSE](LICENSE)

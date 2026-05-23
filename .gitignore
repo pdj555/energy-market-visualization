@@ -2,6 +2,8 @@
 node_modules/
 frontend/node_modules/
 backend/node_modules/
+package-lock.json
+frontend/package-lock.json
 
 # Production builds
 frontend/dist/
@@ -140,6 +142,9 @@ jspm_packages/
 # Next.js build output
 .next
 
+# Vercel local link (project id is in dashboard)
+frontend/.vercel/
+
 # Nuxt.js build / generate output
 .nuxt
 dist
@@ -198,4 +203,14 @@ hs_err_pid*
 # Test artifacts
 **/test-results/
 **/coverage/
-junit.xml 
+junit.xml
+
+# Agent / IDE local state
+.cursor/
+.claude/
+.codex/
+.agent/
+.agents/
+*.agent.jsonl
+agent-transcripts/
+AGENTS.local.md
