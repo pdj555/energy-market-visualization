@@ -9,10 +9,12 @@
     --color-plain: #1769ff;
     --color-primary: #1769ff;
     --color-grid: #74a7ff;
+    --color-grid-line: rgb(116 167 255 / 0.28);
     --color-negative: #dc2626;
     --color-tooltip-bg: #1769ff;
     --color-tooltip-text: #ffffff;
-    --color-muted: rgb(23 105 255 / 0.62);
+    --color-muted: rgb(23 105 255 / 0.58);
+    --color-border-soft: rgb(23 105 255 / 0.18);
   }
 
   :root.dark {
@@ -21,10 +23,12 @@
     --color-plain: #ffffff;
     --color-primary: #a9daf7;
     --color-grid: #3c3c3c;
+    --color-grid-line: rgb(60 60 60 / 0.55);
     --color-negative: #f87171;
     --color-tooltip-bg: #05080c;
     --color-tooltip-text: #a9daf7;
-    --color-muted: rgb(169 218 247 / 0.62);
+    --color-muted: rgb(169 218 247 / 0.58);
+    --color-border-soft: rgb(169 218 247 / 0.16);
   }
 
   html {
@@ -36,9 +40,9 @@
     background-color: var(--color-backdrop);
     color: var(--color-primary);
     background-image:
-      linear-gradient(var(--color-grid) 1px, transparent 1px),
-      linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
-    background-size: 48px 48px;
+      linear-gradient(var(--color-grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid-line) 1px, transparent 1px);
+    background-size: 56px 56px;
     background-position: -1px -1px;
   }
 
@@ -47,8 +51,9 @@
     position: fixed;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(circle at 50% 0%, transparent 40%, var(--color-backdrop) 100%);
-    opacity: 0.92;
+    background:
+      radial-gradient(ellipse 120% 80% at 50% -20%, transparent 45%, var(--color-backdrop) 100%),
+      linear-gradient(to bottom, transparent 0%, color-mix(in srgb, var(--color-backdrop) 88%, transparent) 100%);
   }
 
   ::selection {
@@ -141,7 +146,7 @@
   }
 
   .nous-link {
-    @apply underline-offset-4 transition hover:underline;
+    @apply rounded-sm px-1.5 py-0.5 underline-offset-4 transition hover:underline hover:nous-tint-4;
   }
 
   .nous-stat-grid {
@@ -155,7 +160,7 @@
   }
 
   .nous-stat-cell {
-    @apply px-3 py-3;
+    @apply px-4 py-4;
     background-color: var(--color-backdrop);
   }
 
@@ -170,8 +175,13 @@
   }
 
   .nous-metric-cell {
-    @apply px-3 py-3;
+    @apply px-4 py-3.5;
     background-color: var(--color-backdrop);
+  }
+
+  .nous-skeleton {
+    @apply animate-pulse rounded-sm;
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
   }
 }
 

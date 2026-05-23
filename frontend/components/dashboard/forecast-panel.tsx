@@ -10,7 +10,7 @@ export function ForecastPanel({ forecast }: ForecastPanelProps) {
     <div className="h-full overflow-auto">
       <table className="min-w-full text-xs sm:text-sm">
         <thead className="sticky top-0 z-[1] bg-backdrop">
-          <tr className="nous-divider-strong text-left">
+          <tr className="border-b-2 border-primary text-left">
             <th scope="col" className="label-caps px-3 py-2.5">
               Time
             </th>

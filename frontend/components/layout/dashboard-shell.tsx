@@ -4,7 +4,7 @@ interface DashboardShellProps {
 
 export function DashboardShell({ children }: DashboardShellProps) {
   return (
-    <div className="relative mx-auto flex min-h-screen max-w-[1400px] flex-col p-2 sm:p-4">
+    <div className="relative mx-auto flex min-h-screen w-full max-w-[1320px] flex-col px-3 py-3 sm:px-6 sm:py-5 lg:px-8">
       {children}
     </div>
   );

@@ -39,14 +39,14 @@ export function InsightsPanel({ insights, marketName }: InsightsPanelProps) {
           ))}
         </div>
       </div>
-      <aside className="border-l-2 border-primary pl-4 lg:min-h-full">
+      <aside className="border-l-2 border-primary pl-5 lg:min-h-full">
         <p className="label-caps">Alerts · {marketName}</p>
         {insights.alerts.length > 0 ? (
-          <ul className="mt-4 space-y-3">
+          <ul className="mt-4 space-y-2.5">
             {insights.alerts.map(alert => (
-              <li key={alert} className="flex items-start gap-3 text-xs sm:text-sm">
+              <li key={alert} className="nous-tint-4 flex items-start gap-3 rounded-sm px-3 py-2.5 text-xs sm:text-sm">
                 <span
-                  className="mt-1 h-2 w-2 flex-none rounded-full border border-primary bg-primary"
+                  className="mt-1 h-1.5 w-1.5 flex-none rounded-full bg-primary"
                   aria-hidden
                 />
                 <span>{alert}</span>
@@ -54,7 +54,7 @@ export function InsightsPanel({ insights, marketName }: InsightsPanelProps) {
             ))}
           </ul>
         ) : (
-          <p className="nous-muted mt-4">No anomalies.</p>
+          <p className="nous-muted mt-4 text-xs sm:text-sm">No anomalies in this window.</p>
         )}
       </aside>
     </div>

@@ -16,11 +16,11 @@ interface StatusPillProps {
 
 export function StatusPill({ label, active = false }: StatusPillProps) {
   return (
-    <span className="inline-flex items-center gap-2 text-xs sm:text-sm">
+    <span className="label-caps inline-flex items-center gap-2 rounded-sm border border-primary bg-backdrop px-2 py-0.5">
       <span
         className={cn(
-          'h-2 w-2 rounded-full border border-primary',
-          active ? 'bg-primary animate-pulse' : 'bg-backdrop'
+          'h-1.5 w-1.5 rounded-full',
+          active ? 'bg-primary animate-pulse' : 'border border-primary bg-backdrop'
         )}
         aria-hidden
       />
@@ -65,7 +65,7 @@ export function SelectField({
           </option>
         ))}
       </select>
-      {hint ? <p className="nous-muted text-xs sm:text-sm">{hint}</p> : null}
+      {hint ? <p className="nous-muted line-clamp-2 text-xs sm:text-sm">{hint}</p> : null}
     </div>
   );
 }
@@ -79,9 +79,9 @@ export function Button({ variant = 'primary', className, children, ...props }: B
     <button
       type="button"
       className={cn(
-        'rounded-sm border-2 border-primary px-3 py-1 text-xs transition sm:text-sm',
+        'rounded-sm border-2 border-primary px-4 py-2 text-xs uppercase tracking-[0.1em] transition sm:text-sm',
         variant === 'primary'
-          ? 'bg-primary text-backdrop hover:opacity-90'
+          ? 'bg-primary text-backdrop hover:opacity-90 active:scale-[0.99]'
           : 'bg-backdrop text-primary hover:nous-tint-4',
         className
       )}

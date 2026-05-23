@@ -24,9 +24,9 @@ export function MarketGrid({ overviews, selectedMarket, onSelectMarket }: Market
           onClick={() => onSelectMarket(overview.code)}
           aria-pressed={overview.code === selectedMarket}
           className={cn(
-            'nous-frame p-4 text-left transition animate-fade-up',
+            'nous-frame p-4 text-left transition duration-200 animate-fade-up sm:p-5',
             'hover:nous-tint-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
-            overview.code === selectedMarket && 'nous-tint-8'
+            overview.code === selectedMarket && 'nous-tint-8 ring-2 ring-inset ring-primary'
           )}
           style={{ animationDelay: `${index * 35}ms` }}
         >

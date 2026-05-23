@@ -6,7 +6,7 @@ export function StackBadges() {
       {TOOLCHAIN_BADGES.map(badge => (
         <li
           key={badge}
-          className="rounded-sm border-2 border-primary px-2 py-0.5 text-[11px] sm:text-xs"
+          className="rounded-sm border border-primary px-2.5 py-1 text-[11px] uppercase tracking-[0.08em] sm:text-xs"
         >
           {badge}
         </li>

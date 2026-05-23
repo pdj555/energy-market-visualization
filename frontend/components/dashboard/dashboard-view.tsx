@@ -73,7 +73,7 @@ export function DashboardView() {
         />
       </NousSection>
 
-      <main className="flex flex-1 flex-col gap-2 sm:gap-3">
+      <main className="flex flex-1 flex-col gap-3 sm:gap-4">
         <NousSection id="markets" title="Active Market">
           <MarketSpotlight overview={activeOverview} isRefreshing={dashboard.isRefreshing} />
         </NousSection>
@@ -88,19 +88,19 @@ export function DashboardView() {
           </NousSection>
         ) : null}
 
-        <div className="grid grid-cols-1 gap-2 sm:gap-3 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:gap-4 xl:grid-cols-3">
           <NousSection
             id="analytics"
             title="Price & Demand"
             className="xl:col-span-2"
-            contentClassName="min-h-[360px]"
+            contentClassName="min-h-[380px]"
           >
             <PriceChart
               priceSeries={dashboard.snapshot.priceSeries}
               marketName={dashboard.snapshot.overview.name}
             />
           </NousSection>
-          <NousSection title="Forecast Envelope" flush contentClassName="min-h-[360px]">
+          <NousSection title="Forecast Envelope" flush contentClassName="min-h-[380px]">
             <ForecastPanel forecast={dashboard.snapshot.forecast} />
           </NousSection>
         </div>

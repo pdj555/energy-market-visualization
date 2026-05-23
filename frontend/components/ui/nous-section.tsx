@@ -18,7 +18,7 @@ export function NousSection({
   flush = false,
 }: NousSectionProps) {
   return (
-    <section id={id} aria-labelledby={id ? `${id}-title` : undefined} className={cn('relative scroll-mt-28 py-3', className)}>
+    <section id={id} aria-labelledby={id ? `${id}-title` : undefined} className={cn('relative scroll-mt-32 py-3 sm:py-4', className)}>
       <div className="absolute left-0 top-3 z-10 w-full -translate-y-1/2 px-1 sm:px-4">
         <h2 id={id ? `${id}-title` : undefined} className="nous-legend w-fit">
           {title}
@@ -27,7 +27,7 @@ export function NousSection({
       <div
         className={cn(
           'nous-frame',
-          flush ? 'overflow-hidden' : 'p-4 sm:p-5',
+          flush ? 'overflow-hidden' : 'p-5 sm:p-6',
           contentClassName
         )}
       >
