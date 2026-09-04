@@ -102,7 +102,7 @@ class MarketControllerTest {
   void catalogAllowsDashboardOrigin() {
     webTestClient
         .get()
-        .uri("/api/markets/catalog")
+        .uri("http://localhost/api/markets/catalog")
         .header(HttpHeaders.ORIGIN, "http://localhost:3000")
         .exchange()
         .expectStatus()
@@ -115,7 +115,7 @@ class MarketControllerTest {
   void catalogPreflightAllowsDashboardOrigin() {
     webTestClient
         .options()
-        .uri("/api/markets/catalog")
+        .uri("http://localhost/api/markets/catalog")
         .header(HttpHeaders.ORIGIN, "http://localhost:3000")
         .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "GET")
         .exchange()
