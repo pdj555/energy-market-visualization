@@ -1,0 +1,24 @@
+{
+  "name": "Energy Market Intelligence",
+  "user": "ubuntu",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "install": "cd backend && mvn -B -q dependency:go-offline && cd ../frontend && corepack pnpm install --frozen-lockfile",
+  "terminals": [
+    {
+      "name": "backend-api",
+      "command": "cd backend && mvn -q spring-boot:run",
+      "description": "Spring Boot market API on http://localhost:8080"
+    },
+    {
+      "name": "frontend-dev",
+      "command": "cd frontend && API_PROXY_TARGET=http://localhost:8080 corepack pnpm dev",
+      "description": "Next.js dashboard on http://localhost:3000 (proxies /api/* to the backend)"
+    }
+  ],
+  "ports": [
+    { "name": "frontend", "port": 3000 },
+    { "name": "backend-api", "port": 8080 }
+  ]
+}
