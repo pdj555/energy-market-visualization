@@ -1,20 +1,18 @@
 import type { NextConfig } from 'next';
 
+// Deployed Fly.io backend (see backend/fly.toml). Override with API_PROXY_TARGET
+// for local dev, staging, or an alternate API host.
+const PRODUCTION_API_ORIGIN = 'https://energy-market-viz-api.fly.dev';
+
 function resolveApiOrigin(): string {
   const explicit = process.env.API_PROXY_TARGET?.trim();
   if (explicit) {
     return explicit.replace(/\/$/, '');
   }
 
-  if (process.env.NODE_ENV === 'development') {
-    return 'http://localhost:8080';
-  }
-
-  const hint = process.env.VERCEL
-    ? 'Set API_PROXY_TARGET in Vercel project environment variables.'
-    : 'Set API_PROXY_TARGET in .env.local or export it before building.';
-
-  throw new Error(`API_PROXY_TARGET is required for production builds. ${hint}`);
+  return process.env.NODE_ENV === 'development'
+    ? 'http://localhost:8080'
+    : PRODUCTION_API_ORIGIN;
 }
 
 const apiOrigin = resolveApiOrigin();
